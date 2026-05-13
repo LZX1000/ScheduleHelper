@@ -37,13 +37,6 @@ before_script:
   - pip install -r requirements.txt
   - cp config/gitlab-credentials.yml config/db.yml
 
-testrunner:
-  script:
-    - echo "hello class"
-    - $PYTHON_RUN --version
-    - $PYTHON_RUN -m unittest discover -s test -t . -v
-  stage: test
-
 db-testrunner:
   stage: db-test
   script:
