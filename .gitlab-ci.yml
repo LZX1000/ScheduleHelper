@@ -41,7 +41,7 @@ testrunner:
   script:
     - echo "hello class"
     - $PYTHON_RUN --version
-    - $PYTHON_RUN -m unittest discover -s test -v
+    - $PYTHON_RUN -m unittest discover -s test -t . -v
   stage: test
 
 db-testrunner:
