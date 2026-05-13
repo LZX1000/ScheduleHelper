@@ -33,6 +33,11 @@ source venv/bin/activate  # Mac/Linux
 ```bash
 pip install -r requirements.txt
 ```
+3. Configure the database connection:
+```bash
+cp config/gitlab-credentials.yml config/db.yml
+```
+Then edit `config/db.yml` with your local database credentials.
 
 ### Frontend
 1. Install dependencies:
