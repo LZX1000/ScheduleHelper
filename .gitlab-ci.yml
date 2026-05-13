@@ -6,14 +6,41 @@
 # Note that environment variables can be set in several places
 # See https://docs.gitlab.com/ci/variables/#cicd-variable-precedence
 stages:
-- test
-- secret-detection
+  - test
+  - db-test
+  - secret-detection
+
 sast:
   stage: test
+
 include:
-- template: Security/SAST.gitlab-ci.yml
-- template: Security/Secret-Detection.gitlab-ci.yml
+  - template: Security/SAST.gitlab-ci.yml
+  - template: Security/Secret-Detection.gitlab-ci.yml
+
 variables:
   SECRET_DETECTION_ENABLED: 'true'
+  POSTGRES_DB: swen344
+  POSTGRES_USER: swen344
+  POSTGRES_PASSWORD: whowatchesthewatchmen
+  PYTHON_RUN: python3
+
 secret_detection:
   stage: secret-detection
+
+image:
+  name: kalrabb/docker-344-v2025:latest
+
+services:
+  - postgres:17
+
+.before_script_template: &before_script
+  before_script:
+    - pip install -r requirements.txt
+    - cp config/gitlab-credentials.yml config/db.yml
+
+db-testrunner:
+  <<: *before_script
+  stage: db-test
+  script:
+    - $PYTHON_RUN --version
+    - $PYTHON_RUN -m unittest discover -s test/db -t . -v
