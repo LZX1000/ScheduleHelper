@@ -33,12 +33,14 @@ image:
 services:
   - postgres:17
 
-before_script:
-  - pip install -r requirements.txt
-  - cp config/gitlab-credentials.yml config/db.yml
+.before_script_template: &before_script
+  before_script:
+    - pip install -r requirements.txt
+    - cp config/gitlab-credentials.yml config/db.yml
 
 db-testrunner:
+  <<: *before_script
   stage: db-test
   script:
     - $PYTHON_RUN --version
-    - $PYTHON_RUN -m unittest discover -s test/db -v
+    - $PYTHON_RUN -m unittest discover -s test/db -t . -v
