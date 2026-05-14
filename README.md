@@ -8,6 +8,7 @@
 - [Setup](#setup)
 - [Usage](#usage)
 - [Feature Roadmap](#feature-roadmap)
+- [Database Schema](#database-schema)
 - [Project Structure](#project-structure)
 
 ## Description
@@ -16,9 +17,10 @@ This is a personal project built out of a desire for a helper tool to streamline
 A secondary planned feature is suggesting changes after call-offs. Based on the previous metrics, robust teams will be created with contingency plans for who should be called in in the event that an original member calls off, while maintaining the predicted team performance.
 
 ## Tech Stack
-- **Backend:** Python
 - **Frontend:** React + Vite
-- **Dependencies:** see `requirements.txt` and `client/package.json`
+- **Backend:** Python
+- **Database:** PostgreSQL
+- **Dependencies:** see [`requirements.txt`](requirements.txt) and [`client/package.json`](client/package.json)
 
 ## Setup
 
@@ -38,6 +40,10 @@ pip install -r requirements.txt
 cp config/gitlab-credentials.yml config/db.yml
 ```
 Then edit `config/db.yml` with your local database credentials.
+4. Initialize the database schema:
+```bash
+python setup_db.py
+```
 
 ### Frontend
 1. Install dependencies:
@@ -75,6 +81,13 @@ npm run dev
 4. **Attendance** - Previous attendance and call-off likelihood will be calculated and factored into scheduling, ensuring equitable scheduling while factoring in attendance history, with employees who have lower attendance reliability receiving fewer future assignments.
 
 5. **Call-off Suggestion** - Replacement employees are suggested for each position in case of a call-off, with the chemistry and skill requirements of replacements having an inverse relationship with the reliability of the original employee.
+
+## Database Schema
+The schema is defined in [`server/schedulehelper.sql`](server/schedulehelper.sql). The initial shift logging schema consists of four tables:
+- **employee** - Stores individual employee records (id, first_name, last_name).
+- **shift** - Represents a scheduled shift with timezone-aware start and end times.
+- **role_type** - Lookup table of possible roles an employee can fill during a shift.
+- **shift_role** - Junction table linking an employee and a role to a specific shift. Records a per-shift performance score (0–100) for use in future skill and chemistry calculations.
 
 ## Project Structure
 ```
