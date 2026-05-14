@@ -92,11 +92,22 @@ The schema is defined in [`server/schedulehelper.sql`](server/schedulehelper.sql
 ## Project Structure
 ```
 ScheduleHelper/
-├── client/          # React + Vite frontend
-├── docs/            # Screenshots and documentation
-├── public/          # Reserved for Vite
-├── server/          # Python backend
-├── test/            # GitLab tests
+├── client/                 # React + Vite frontend
+│   └── package.json        # Frontend dependencies
+├── config/
+│   ├── db.yml              # DB credentials (generated during setup)
+│   └── gitlabcredentials.yml  # Placeholder credentials
+├── docs/                   # Screenshots and documentation
+├── public/                 # Reserved for Vite
+├── server/                 # Python backend
+│   ├── api/                # API implementations
+│   ├── db/                 # Database tests
+│   │   └── schedulehelper.sql  # Database schema
+│   ├── server.py           # Server entry point
+│   └── setup.py            # Initializes database schema from db.yml
+├── test/                   # GitLab tests
+│   ├── db/                 # Database tests
+│   └── rest_utils.py
 └── requirements.txt
 ```
 
