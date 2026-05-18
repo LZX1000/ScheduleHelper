@@ -30,7 +30,7 @@ secret_detection:
   stage: secret-detection
 
 image:
-  name: kalrabb/docker-344-v2025:latest
+  name: maven:3.9-eclipse-temurin-21
 
 services:
   - postgres:17
