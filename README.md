@@ -18,32 +18,19 @@ A secondary planned feature is suggesting changes after call-offs. Based on the 
 
 ## Tech Stack
 - **Frontend:** React + Vite
-- **Backend:** Python
+- **Backend:** Java Spring Boot
 - **Database:** PostgreSQL
-- **Dependencies:** see [`requirements.txt`](requirements.txt) and [`client/package.json`](client/package.json)
+- **Dependencies:** see [`pom.xml`](server/pom.xml) and [`client/package.json`](client/package.json)
 
 ## Setup
 
 ### Backend
-1. Create and activate a virtual environment:
+1. Ensure Java 17+ is installed.
+2. Configure the database connection:
 ```bash
-python -m venv venv
-venv\Scripts\activate  # Windows
-source venv/bin/activate  # Mac/Linux
+cp server/src/main/resources/application.properties server/src/main/resources/application-local.properties
 ```
-2. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
-3. Configure the database connection:
-```bash
-cp config/gitlab-credentials.yml config/db.yml
-```
-Then edit `config/db.yml` with your local database credentials.
-4. Initialize the database schema:
-```bash
-python setup_db.py
-```
+Then edit `application-local.properties` with your local database credentials.
 
 ### Frontend
 1. Install dependencies:
@@ -56,7 +43,8 @@ npm install
 
 ### Backend
 ```bash
-python server/server.py
+cd server
+mvn spring-boot:run
 ```
 
 #### Expected Output
@@ -83,7 +71,7 @@ npm run dev
 5. **Call-off Suggestion** - Replacement employees are suggested for each position in case of a call-off, with the chemistry and skill requirements of replacements having an inverse relationship with the reliability of the original employee.
 
 ## Database Schema
-The schema is defined in [`server/schedulehelper.sql`](server/schedulehelper.sql). The initial shift logging schema consists of four tables:
+The schema is defined in [`server/db/schedulehelper.sql`](server/db/schedulehelper.sql). The initial shift logging schema consists of four tables:
 - **employee** - Stores individual employee records (id, first_name, last_name).
 - **shift** - Represents a scheduled shift with timezone-aware start and end times.
 - **role_type** - Lookup table of possible roles an employee can fill during a shift.
@@ -92,23 +80,23 @@ The schema is defined in [`server/schedulehelper.sql`](server/schedulehelper.sql
 ## Project Structure
 ```
 ScheduleHelper/
-├── client/                 # React + Vite frontend
-│   └── package.json        # Frontend dependencies
-├── config/
-│   ├── db.yml              # DB credentials (generated during setup)
-│   └── gitlabcredentials.yml  # Placeholder credentials
-├── docs/                   # Screenshots and documentation
-├── public/                 # Reserved for Vite
-├── server/                 # Python backend
-│   ├── api/                # API implementations
-│   ├── db/                 # Database tests
-│   │   └── schedulehelper.sql  # Database schema
-│   ├── server.py           # Server entry point
-│   └── setup.py            # Initializes database schema from db.yml
-├── test/                   # GitLab tests
-│   ├── db/                 # Database tests
-│   └── rest_utils.py
-└── requirements.txt
+├── client/                     # React + Vite frontend
+│   └── package.json            # Frontend dependencies
+├── docs/                       # Screenshots and documentation
+├── public/                     # Reserved for Vite
+└── server/                     # Java Spring Boot backend
+    ├── db/
+    │   └── schedulehelper.sql      # Database schema
+    ├── src/
+    │   ├── main/
+    │   │   ├── java/com/schedulehelper/api/schedulehelperapi/
+    │   │   │   └── ScheduleHelperApiApplication.java
+    │   │   └── resources/
+    │   │       └── application.properties
+    │   └── test/
+    │       └── java/com/schedulehelper/api/schedulehelperapi/
+    │           └── ScheduleHelperApiApplicationTests.java
+    └── pom.xml
 ```
 
 ## Project Status
