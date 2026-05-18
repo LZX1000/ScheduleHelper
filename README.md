@@ -44,7 +44,7 @@ npm install
 ### Backend
 ```bash
 cd server
-mvn spring-boot:run
+./mvnw spring-boot:run
 ```
 
 #### Expected Output
