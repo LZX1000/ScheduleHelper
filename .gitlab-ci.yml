@@ -22,7 +22,9 @@ variables:
   POSTGRES_DB: swen344
   POSTGRES_USER: swen344
   POSTGRES_PASSWORD: whowatchesthewatchmen
-  PYTHON_RUN: python3
+  SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/swen344
+  SPRING_DATASOURCE_USERNAME: swen344
+  SPRING_DATASOURCE_PASSWORD: whowatchesthewatchmen
 
 secret_detection:
   stage: secret-detection
@@ -35,12 +37,10 @@ services:
 
 .before_script_template: &before_script
   before_script:
-    - pip install -r requirements.txt
-    - cp config/gitlab-credentials.yml config/db.yml
+    - cd server
 
 db-testrunner:
   <<: *before_script
   stage: db-test
   script:
-    - $PYTHON_RUN --version
-    - $PYTHON_RUN -m unittest discover -s test/db -t . -v
+    - mvn test
