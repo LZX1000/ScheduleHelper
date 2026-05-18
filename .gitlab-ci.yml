@@ -43,4 +43,4 @@ db-testrunner:
   <<: *before_script
   stage: db-test
   script:
-    - mvn test
+    - ./mvnw test
