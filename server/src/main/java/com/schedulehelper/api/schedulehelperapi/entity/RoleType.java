@@ -10,7 +10,6 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "role_type")
 public class RoleType {
-
     /**
      * Auto-generated primary key.
      */
@@ -26,7 +25,11 @@ public class RoleType {
 
     // CONSTRUCTOR
 
-    protected RoleType() {}
+    /**
+     * Required by JPA. Not for direct use.
+     */
+    protected RoleType() {
+    }
 
     public RoleType(final String title) {
         this.title = title;
@@ -34,10 +37,17 @@ public class RoleType {
 
     // GETTERS
 
-    public Integer getId() { return this.id; }
-    public String getTitle() { return this.title; }
+    public Integer getId() {
+        return this.id;
+    }
+
+    public String getTitle() {
+        return this.title;
+    }
 
     // SETTERS
 
-    public void setStartTime(final String newTitle) { this.title = newTitle; }
+    public void setStartTime(final String newTitle) {
+        this.title = newTitle;
+    }
 }

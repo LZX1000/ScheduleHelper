@@ -11,7 +11,6 @@ import java.time.OffsetDateTime;
 @Entity
 @Table(name = "shift")
 public class Shift {
-
     /**
      * Auto-generated primary key.
      */
@@ -33,7 +32,11 @@ public class Shift {
 
     // CONSTRUCTOR
 
-    protected Shift() {}
+    /**
+     * Required by JPA. Not for direct use.
+     */
+    protected Shift() {
+    }
 
     public Shift(final OffsetDateTime startTime, final OffsetDateTime endTime) {
         this.startTime = startTime;
@@ -42,12 +45,25 @@ public class Shift {
 
     // GETTERS
 
-    public Integer getId() { return this.id; }
-    public OffsetDateTime getStartTime() { return this.startTime; }
-    public OffsetDateTime getEndTime() { return this.endTime; }
+    public Integer getId() {
+        return this.id;
+    }
+
+    public OffsetDateTime getStartTime() {
+        return this.startTime;
+    }
+
+    public OffsetDateTime getEndTime() {
+        return this.endTime;
+    }
 
     // SETTERS
 
-    public void setStartTime(final OffsetDateTime newStartTime) { this.startTime = newStartTime; }
-    public void setEndTime(final OffsetDateTime newEndTime) { this.endTime = newEndTime; }
+    public void setStartTime(final OffsetDateTime newStartTime) {
+        this.startTime = newStartTime;
+    }
+
+    public void setEndTime(final OffsetDateTime newEndTime) {
+        this.endTime = newEndTime;
+    }
 }

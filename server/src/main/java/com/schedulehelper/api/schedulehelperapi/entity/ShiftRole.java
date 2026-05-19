@@ -10,7 +10,6 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "shift_role")
 public class ShiftRole {
-
     /**
      * Auto-generated primary key.
      */
@@ -50,7 +49,8 @@ public class ShiftRole {
     /**
      * Required by JPA. Not for direct use.
      */
-    protected ShiftRole() {}
+    protected ShiftRole() {
+    }
 
     public ShiftRole(final Shift shift, final Employee employee, final RoleType roleType) {
         this(shift, employee, roleType, null);
@@ -70,14 +70,29 @@ public class ShiftRole {
 
     // GETTERS
 
-    public Integer getId() { return this.id; }
-    public Shift getShift() { return this.shift; }
-    public Employee getEmployee() { return this.employee; }
-    public RoleType getRole() { return this.roleType; }
+    public Integer getId() {
+        return this.id;
+    }
 
-    public Short getPerformance() { return this.performance; }
+    public Shift getShift() {
+        return this.shift;
+    }
+
+    public Employee getEmployee() {
+        return this.employee;
+    }
+
+    public RoleType getRole() {
+        return this.roleType;
+    }
+
+    public Short getPerformance() {
+        return this.performance;
+    }
 
     // SETTERS
 
-    public void setPerformance(final short newPerformance) { this.performance = newPerformance; }
+    public void setPerformance(final short newPerformance) {
+        this.performance = newPerformance;
+    }
 }

@@ -10,7 +10,6 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "employee")
 public class Employee {
-
     /**
      * Auto-generated primary key.
      */
@@ -35,10 +34,13 @@ public class Employee {
     /**
      * Required by JPA. Not for direct use.
      */
-    protected Employee() {}
+    protected Employee() {
+    }
 
-    public Employee(final String firstName) { this(firstName, null); }
-    
+    public Employee(final String firstName) {
+        this(firstName, null);
+    }
+
     public Employee(final String firstName, final String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -46,12 +48,25 @@ public class Employee {
 
     // GETTERS
 
-    public Integer getId() { return this.id; }
-    public String getFirstName() { return this.firstName; }
-    public String getLastName() { return this.lastName; }
+    public Integer getId() {
+        return this.id;
+    }
+
+    public String getFirstName() {
+        return this.firstName;
+    }
+    
+    public String getLastName() {
+        return this.lastName;
+    }
 
     // SETTERS
 
-    public void setFirstName(final String newFirstName) { this.firstName = newFirstName; }
-    public void setLastName(final String newLastName) { this.lastName = newLastName; }
+    public void setFirstName(final String newFirstName) {
+        this.firstName = newFirstName;
+    }
+
+    public void setLastName(final String newLastName) {
+        this.lastName = newLastName;
+    }
 }
