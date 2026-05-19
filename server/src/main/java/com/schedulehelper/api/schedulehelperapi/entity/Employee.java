@@ -2,7 +2,6 @@ package com.schedulehelper.api.schedulehelperapi.entity;
 
 import jakarta.persistence.*;
 
-
 /**
  * Entity representing the {@code employee} table.
  *
