@@ -26,7 +26,7 @@ DROP TABLE IF EXISTS role_type CASCADE;
 CREATE TABLE employee (
     id              SERIAL,
     first_name      TEXT NOT NULL,
-    last_name       TEXT,
+    last_name       TEXT DEFAULT '',
 
     PRIMARY KEY (id)
 );

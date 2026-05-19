@@ -27,7 +27,7 @@ public class Employee {
      * Employee's last name. Optional.
      */
     @Column(name = "last_name")
-    private String lastName;
+    private String lastName = "";
 
     // CONSTRUCTOR
 
