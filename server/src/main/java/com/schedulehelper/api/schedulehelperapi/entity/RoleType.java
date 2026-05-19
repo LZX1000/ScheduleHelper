@@ -26,7 +26,11 @@ public class RoleType {
 
     // CONSTRUCTOR
 
-    public RoleType() {}
+    protected RoleType() {}
+
+    public RoleType(final String title) {
+        this.title = title;
+    }
 
     // GETTERS
 
