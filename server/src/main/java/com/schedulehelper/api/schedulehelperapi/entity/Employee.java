@@ -32,7 +32,17 @@ public class Employee {
 
     // CONSTRUCTOR
 
-    public Employee() {}
+    /**
+     * Required by JPA. Not for direct use.
+     */
+    protected Employee() {}
+
+    public Employee(final String firstName) { this(firstName, null); }
+    
+    public Employee(final String firstName, final String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
 
     // GETTERS
 
