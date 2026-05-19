@@ -33,7 +33,12 @@ public class Shift {
 
     // CONSTRUCTOR
 
-    public Shift() {}
+    protected Shift() {}
+
+    public Shift(final OffsetDateTime startTime, final OffsetDateTime endTime) {
+        this.startTime = startTime;
+        this.endTime = endTime;
+    }
 
     // GETTERS
 
