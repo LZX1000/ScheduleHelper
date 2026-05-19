@@ -19,7 +19,7 @@ public class RoleType {
     private Integer id;
 
     /**
-     * Shift's start time. Required.
+     * Name of role. Required.
      */
     @Column(name = "title", nullable = false, unique = true)
     private String title;
