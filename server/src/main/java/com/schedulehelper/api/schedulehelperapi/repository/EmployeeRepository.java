@@ -24,8 +24,8 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
      */
     @Query(
         value = "SELECT * FROM employee "
-              + "WHERE first_name ILIKE '%' || :first || '%' "
-              + "AND last_name ILIKE '%' || :last || '%'",
+              + "WHERE LOWER(first_name) LIKE '%' || LOWER(:first) || '%' "
+              + "AND LOWER(last_name) LIKE '%' || LOWER(:last) || '%'",
         nativeQuery = true
     )
     Optional<Employee> findByName(@Param("first") String first, @Param("last") String last);
