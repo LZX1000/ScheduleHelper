@@ -26,20 +26,22 @@ public class EmployeeRepositoryTest {
     void setUp() {
         employeeRepository.save(new Employee("John", "Smith"));
         employeeRepository.save(new Employee("Jane", "Doe"));
+        employeeRepository.save(new Employee("Alex"));
     }
 
     // --- findByName ---
 
     static Stream<Arguments> matchingNameCases() {
         return Stream.of(
-            Arguments.of("full name",             "John",  "Smith"),
-            Arguments.of("partial first",         "Jo",    "Smith"),
-            Arguments.of("partial last",          "John",  "Smi"  ),
-            Arguments.of("partial first and last","Jo",    "Sm"   ),
-            Arguments.of("uppercase first",       "JoHN",  "Smith"),
-            Arguments.of("uppercase last",        "John",  "SmITH"),
-            Arguments.of("empty first",           "",      "Smith"),
-            Arguments.of("empty last",            "John",  ""     )
+            Arguments.of("full name",             "John", "Smith"),
+            Arguments.of("partial first",         "Jo",   "Smith"),
+            Arguments.of("partial last",          "John", "Smi"  ),
+            Arguments.of("partial first and last","Jo",   "Sm"   ),
+            Arguments.of("uppercase first",       "JoHN", "Smith"),
+            Arguments.of("uppercase last",        "John", "SmITH"),
+            Arguments.of("empty first",           "",     "Smith"),
+            Arguments.of("empty last full first", "John", ""     ),
+            Arguments.of("empty last employee"  , "Alex", ""     )
         );
     }
 
@@ -60,7 +62,9 @@ public class EmployeeRepositoryTest {
             Arguments.of("failing real last partial first", "Jo",   "Doe"  ),
             Arguments.of("failing real first partial last", "Ja",   "Smith"),
             Arguments.of("failing fake last full first",    "John", "xyz"  ),
-            Arguments.of("failing fake first full last",    "xyz",  "Smith")
+            Arguments.of("failing fake first full last",    "xyz",  "Smith"),
+            Arguments.of("failing first empty last",        "xyz",  ""     ),
+            Arguments.of("empty first real last",           "",     "Smith")
         );
     }
 
