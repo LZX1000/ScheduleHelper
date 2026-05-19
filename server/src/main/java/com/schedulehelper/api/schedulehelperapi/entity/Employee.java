@@ -42,8 +42,9 @@ public class Employee {
     }
 
     public Employee(final String firstName, final String lastName) {
+        if (lastName != null) this.lastName = lastName;
+
         this.firstName = firstName;
-        this.lastName = lastName;
     }
 
     // GETTERS
