@@ -1,5 +1,6 @@
 package com.schedulehelper.api.schedulehelperapi.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -30,5 +31,5 @@ public interface RoleTypeRepository extends JpaRepository<RoleType, Integer> {
         value = "SELECT * FROM role_type WHERE LOWER(title) LIKE '%' || LOWER(:title) || '%' ",
         nativeQuery = true
     )
-    Optional<Employee> findByPartialTitle(@Param("title") String title);
+    List<Employee> findByPartialTitle(@Param("title") String title);
 }
