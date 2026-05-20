@@ -98,4 +98,28 @@ public class ShiftRepositoryIT {
             .extracting(Shift::getId)
             .containsAll(contains);
     }
+
+    static Stream<Arguments> noMatchStartTimeBetween() {
+        return Stream.of(
+            Arguments.of(
+                "next month",
+                OffsetDateTime.of(2026, 6, 1, 0, 0, 0, 0, ZoneOffset.ofHours(0)),
+                OffsetDateTime.of(2026, 6, 30, 23, 59, 59, 0, ZoneOffset.ofHours(0))
+            ),
+            Arguments.of(
+                "previous week",
+                OffsetDateTime.of(2026, 5, 10, 0, 0, 0, 0, ZoneOffset.ofHours(0)),
+                OffsetDateTime.of(2026, 5, 16, 23, 59, 59, 0, ZoneOffset.ofHours(0))
+            )
+        );
+    }
+
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("noMatchStartTimeBetween")
+    void findByStartTimeBetween_noMatch_returnsEmpty(
+        final String description,
+        final OffsetDateTime start, final OffsetDateTime end
+    ) {
+        assertThat(this.shiftRepository.findByStartTimeBetween(start, end)).isEmpty();
+    }
 }
