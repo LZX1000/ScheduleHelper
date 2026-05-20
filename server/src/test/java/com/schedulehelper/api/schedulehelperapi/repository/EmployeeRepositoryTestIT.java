@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Tests for {@link EmployeeRepository}.
+ * Integration tests for {@link EmployeeRepository}.
  */
 @Tag("repository")
 @DataJpaTest
