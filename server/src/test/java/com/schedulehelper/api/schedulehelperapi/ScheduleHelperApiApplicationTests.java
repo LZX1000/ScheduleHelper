@@ -5,9 +5,12 @@ import org.junit.jupiter.api.Test;
 
 @SpringBootTest
 class ScheduleHelperApiApplicationTests {
-
     @Test
     void contextLoads() {
     }
 
+    @Test
+    void main_doesNotThrow() {
+        ScheduleHelperApiApplication.main(new String[]{});
+    }
 }
