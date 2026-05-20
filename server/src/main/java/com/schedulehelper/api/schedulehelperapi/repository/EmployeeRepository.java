@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+import java.util.List;
 
 /**
  * Repository for {@link Employee} entities.
@@ -20,7 +20,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
      *
      * @param first partial first name
      * @param last  partial last name
-     * @return the matching employee, if found
+     * @return the matching employees, if found
      */
     @Query(
         value = "SELECT * FROM employee "
@@ -28,5 +28,5 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
               + "AND LOWER(last_name) LIKE '%' || LOWER(:last) || '%'",
         nativeQuery = true
     )
-    Optional<Employee> findByName(@Param("first") String first, @Param("last") String last);
+    List<Employee> findByName(@Param("first") String first, @Param("last") String last);
 }
