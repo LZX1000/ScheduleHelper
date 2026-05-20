@@ -47,7 +47,7 @@ public class RoleType {
 
     // SETTERS
 
-    public void setStartTime(final String newTitle) {
+    public void setTitle(final String newTitle) {
         this.title = newTitle;
     }
 }
