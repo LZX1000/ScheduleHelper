@@ -33,7 +33,7 @@ public class RoleTypeRepositoryIT {
 
     // --- findByPartialTitle ---
 
-    static Stream<Arguments> matchingPartialNameCases() {
+    static Stream<Arguments> matchingPartialTitleCases() {
         return Stream.of(
             Arguments.of("partial lower",      "p",        List.of("PA")                   ),
             Arguments.of("partial upper",      "P",        List.of("PA")                   ),
@@ -44,8 +44,8 @@ public class RoleTypeRepositoryIT {
     }
 
     @ParameterizedTest(name = "{0}")
-    @MethodSource("matchingPartialNameCases")
-    void findByName_returnsEmployee(
+    @MethodSource("matchingPartialTitleCases")
+    void findByPartialTitle_returnsRoleType(
         final String description,
         final String title,
         final List<String> contains
@@ -53,5 +53,21 @@ public class RoleTypeRepositoryIT {
         assertThat(this.roleTypeRepository.findByPartialTitle(title))
             .extracting(RoleType::getTitle)
             .containsAll(contains);
+    }
+
+    static Stream<Arguments> noMatchPartialTitleCases() {
+        return Stream.of(
+            Arguments.of("no match", "xyz", List.of())
+        );
+    }
+
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("noMatchPartialTitleCases")
+    void findByPartialTitle_noMatch_returnsEmpty(
+        final String description,
+        final String title,
+        final List<String> contains
+    ) {
+        assertThat(this.roleTypeRepository.findByPartialTitle(title)).isEmpty();
     }
 }
