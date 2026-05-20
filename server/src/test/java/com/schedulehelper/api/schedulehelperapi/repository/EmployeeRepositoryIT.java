@@ -9,6 +9,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,15 +35,15 @@ public class EmployeeRepositoryIT {
 
     static Stream<Arguments> matchingNameCases() {
         return Stream.of(
-            Arguments.of("full name",             "John", "Smith"),
-            Arguments.of("partial first",         "Jo",   "Smith"),
-            Arguments.of("partial last",          "John", "Smi"  ),
-            Arguments.of("partial first and last","Jo",   "Sm"   ),
-            Arguments.of("uppercase first",       "JoHN", "Smith"),
-            Arguments.of("uppercase last",        "John", "SmITH"),
-            Arguments.of("empty first real last", "",     "Smith"),
-            Arguments.of("empty last full first", "John", ""     ),
-            Arguments.of("empty last employee"  , "Alex", ""     )
+            Arguments.of("full name",             "John", "Smith", Arrays.asList("John")),
+            Arguments.of("partial first",         "Jo",   "Smith", Arrays.asList("John")),
+            Arguments.of("partial last",          "John", "Smi",   Arrays.asList("John")),
+            Arguments.of("partial first and last","Jo",   "Sm",    Arrays.asList("John")),
+            Arguments.of("uppercase first",       "JoHN", "Smith", Arrays.asList("John")),
+            Arguments.of("uppercase last",        "John", "SmITH", Arrays.asList("John")),
+            Arguments.of("empty first real last", "",     "Smith", Arrays.asList("John")),
+            Arguments.of("empty last full first", "John", "",      Arrays.asList("John")),
+            Arguments.of("empty last employee"  , "Alex", "",      Arrays.asList("Alex"))
         );
     }
 
@@ -49,9 +51,12 @@ public class EmployeeRepositoryIT {
     @MethodSource("matchingNameCases")
     void findByName_returnsEmployee(
         final String description,
-        final String first, final String last
+        final String first, final String last,
+        final List<String> contains
     ) {
-        assertThat(this.employeeRepository.findByName(first, last)).isNotEmpty();
+        assertThat(this.employeeRepository.findByName(first, last))
+            .extracting(Employee::getFirstName)
+            .containsAll(contains);
     }
 
     static Stream<Arguments> noMatchNameCases() {
