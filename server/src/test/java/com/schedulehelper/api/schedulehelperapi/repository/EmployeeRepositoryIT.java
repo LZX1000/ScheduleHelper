@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @Tag("repository")
 @DataJpaTest
-public class EmployeeRepositoryTestIT {
+public class EmployeeRepositoryIT {
     @Autowired
     private EmployeeRepository employeeRepository;
 
@@ -51,7 +51,7 @@ public class EmployeeRepositoryTestIT {
         final String description,
         final String first, final String last
     ) {
-        assertThat(this.employeeRepository.findByName(first, last)).isPresent();
+        assertThat(this.employeeRepository.findByName(first, last)).isNotEmpty();
     }
 
     static Stream<Arguments> noMatchNameCases() {
