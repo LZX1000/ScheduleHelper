@@ -42,6 +42,13 @@ npm install
 ## Usage
 
 ### Backend
+1. Ensure Java 24 is installed.
+2. Install dependencies:
+```bash
+cd server
+./mvnw install
+```
+3. Configure the database connection:
 ```bash
 cd server
 ./mvnw spring-boot:run
@@ -89,13 +96,16 @@ ScheduleHelper/
     │   └── schedulehelper.sql      # Database schema
     ├── src/
     │   ├── main/
-    │   │   ├── java/com/schedulehelper/api/schedulehelperapi/
+    │   │   ├── java/com/schedulehelper/api/
+    │   │   │   ├── entity/         # JPA entities
+    │   │   │   ├── repository/     # Spring Data JPA repositories
     │   │   │   └── ScheduleHelperApiApplication.java
     │   │   └── resources/
     │   │       └── application.properties
     │   └── test/
-    │       └── java/com/schedulehelper/api/schedulehelperapi/
-    │           └── ScheduleHelperApiApplicationTests.java
+    │       └── java/com/schedulehelper/api/
+    │           ├── entity/         # Entity unit tests
+    │           └── repository/     # Repository integration tests
     └── pom.xml
 ```
 
