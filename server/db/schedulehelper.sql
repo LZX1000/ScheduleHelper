@@ -26,7 +26,7 @@ DROP TABLE IF EXISTS role_type CASCADE;
 CREATE TABLE employee (
     id              SERIAL,
     first_name      TEXT NOT NULL,
-    last_name       TEXT,
+    last_name       TEXT DEFAULT '',
 
     PRIMARY KEY (id)
 );
@@ -38,13 +38,16 @@ CREATE TABLE employee (
 --
 -- Columns:
 --   id          - Serial primary key.
---   start_time  - Shift start time. Timezone-aware. Required.
+--   start_time  - Shift start time. Timezone-aware, must be
+--                 less than end time. Required.
 --   end_time    - Shift end time. Timezone-aware. Required.
 -- ------------------------------------------------------------
 CREATE TABLE shift (
     id              SERIAL,
     start_time      TIMESTAMPTZ NOT NULL,
     end_time        TIMESTAMPTZ NOT NULL,
+
+    CHECK (start_time < end_time),
 
     PRIMARY KEY (id)
 );

@@ -1,0 +1,53 @@
+package com.schedulehelper.api.entity;
+
+import jakarta.persistence.*;
+
+/**
+ * Entity representing the {@code role_type} table.
+ *
+ * @see <a href="db/schedulehelper.sql">schedulehelper.sql</a>
+ */
+@Entity
+@Table(name = "role_type")
+public class RoleType {
+    /**
+     * Auto-generated primary key.
+     */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    /**
+     * Name of role. Required.
+     */
+    @Column(name = "title", nullable = false, unique = true)
+    private String title;
+
+    // CONSTRUCTOR
+
+    /**
+     * Required by JPA. Not for direct use.
+     */
+    protected RoleType() {
+    }
+
+    public RoleType(final String title) {
+        this.title = title;
+    }
+
+    // GETTERS
+
+    public Integer getId() {
+        return this.id;
+    }
+
+    public String getTitle() {
+        return this.title;
+    }
+
+    // SETTERS
+
+    public void setTitle(final String newTitle) {
+        this.title = newTitle;
+    }
+}
