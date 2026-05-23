@@ -1,4 +1,4 @@
-package com.schedulehelper.api.schedulehelperapi.entity;
+package com.schedulehelper.api.entity;
 
 import jakarta.persistence.*;
 

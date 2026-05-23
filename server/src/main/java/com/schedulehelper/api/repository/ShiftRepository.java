@@ -1,4 +1,4 @@
-package com.schedulehelper.api.schedulehelperapi.repository;
+package com.schedulehelper.api.repository;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.schedulehelper.api.schedulehelperapi.entity.Shift;
+import com.schedulehelper.api.entity.Shift;
 
 @Repository
 public interface ShiftRepository extends JpaRepository<Shift, Integer> {

@@ -1,10 +1,11 @@
-package com.schedulehelper.api.schedulehelperapi.repository;
+package com.schedulehelper.api.repository;
 
-import com.schedulehelper.api.schedulehelperapi.entity.Employee;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import com.schedulehelper.api.entity.Employee;
 
 import java.util.List;
 

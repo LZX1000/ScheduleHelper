@@ -1,4 +1,4 @@
-package com.schedulehelper.api.schedulehelperapi.repository;
+package com.schedulehelper.api.repository;
 
 import java.util.List;
 import java.util.Optional;
@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.schedulehelper.api.schedulehelperapi.entity.RoleType;
+import com.schedulehelper.api.entity.RoleType;
 
 @Repository
 public interface RoleTypeRepository extends JpaRepository<RoleType, Integer> {

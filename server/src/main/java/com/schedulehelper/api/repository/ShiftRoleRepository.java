@@ -1,14 +1,14 @@
-package com.schedulehelper.api.schedulehelperapi.repository;
+package com.schedulehelper.api.repository;
 
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.schedulehelper.api.schedulehelperapi.entity.Employee;
-import com.schedulehelper.api.schedulehelperapi.entity.RoleType;
-import com.schedulehelper.api.schedulehelperapi.entity.Shift;
-import com.schedulehelper.api.schedulehelperapi.entity.ShiftRole;
+import com.schedulehelper.api.entity.Employee;
+import com.schedulehelper.api.entity.RoleType;
+import com.schedulehelper.api.entity.Shift;
+import com.schedulehelper.api.entity.ShiftRole;
 
 @Repository
 public interface ShiftRoleRepository extends JpaRepository<ShiftRole, Integer> {

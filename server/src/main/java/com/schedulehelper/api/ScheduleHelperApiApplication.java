@@ -1,4 +1,4 @@
-package com.schedulehelper.api.schedulehelperapi;
+package com.schedulehelper.api;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

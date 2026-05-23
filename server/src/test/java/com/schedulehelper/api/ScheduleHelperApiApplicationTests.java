@@ -1,4 +1,4 @@
-package com.schedulehelper.api.schedulehelperapi;
+package com.schedulehelper.api;
 
 import org.springframework.boot.test.context.SpringBootTest;
 import org.junit.jupiter.api.Test;

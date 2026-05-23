@@ -1,6 +1,5 @@
-package com.schedulehelper.api.schedulehelperapi.repository;
+package com.schedulehelper.api.repository;
 
-import com.schedulehelper.api.schedulehelperapi.entity.Shift;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -9,6 +8,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+
+import com.schedulehelper.api.entity.Shift;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;

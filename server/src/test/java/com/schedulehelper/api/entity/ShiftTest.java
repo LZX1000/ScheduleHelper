@@ -1,4 +1,4 @@
-package com.schedulehelper.api.schedulehelperapi.entity;
+package com.schedulehelper.api.entity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

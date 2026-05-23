@@ -1,9 +1,4 @@
-package com.schedulehelper.api.schedulehelperapi.repository;
-
-import com.schedulehelper.api.schedulehelperapi.entity.Employee;
-import com.schedulehelper.api.schedulehelperapi.entity.RoleType;
-import com.schedulehelper.api.schedulehelperapi.entity.Shift;
-import com.schedulehelper.api.schedulehelperapi.entity.ShiftRole;
+package com.schedulehelper.api.repository;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
@@ -13,6 +8,11 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+
+import com.schedulehelper.api.entity.Employee;
+import com.schedulehelper.api.entity.RoleType;
+import com.schedulehelper.api.entity.Shift;
+import com.schedulehelper.api.entity.ShiftRole;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
