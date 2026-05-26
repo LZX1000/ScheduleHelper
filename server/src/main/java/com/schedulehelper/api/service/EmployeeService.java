@@ -28,6 +28,18 @@ public class EmployeeService {
         this.employeeRepository.save(employee);
     }
 
+    @Transactional
+    public void updateById(final Employee employee) {
+        final Integer employeeId = employee.getId();
+        if (employeeId == null) {
+            throw new IllegalArgumentException("Employee must have an ID to be updated.");
+        }
+        if (!this.employeeRepository.existsById(employeeId)) {
+            throw new EmployeeNotFoundException(employeeId);
+        }
+        this.employeeRepository.save(employee);
+    }
+
     @Transactional(readOnly = true)
     public List<Employee> findByPartialName(
         final Optional<String> first, final Optional<String> last
