@@ -46,6 +46,19 @@ public class RoleTypeService {
     }
 
     @Transactional
+    public void createNew(final RoleType roleType) {
+        final Integer roleTypeId = roleType.getId();
+
+        if (roleTypeId != null) {
+            LOG.warn("Attempted to create role_type with predefined id {}", roleTypeId);
+            throw new IllegalArgumentException("New RoleType must not have an ID.");
+        }
+
+        final RoleType savedRoleType = this.roleTypeRepository.save(roleType);
+        LOG.info("Created new employee with id {}", savedRoleType.getId());
+    }
+
+    @Transactional
     public void deleteById(final Integer roleTypeId) {
         if (!this.roleTypeRepository.existsById(roleTypeId)) {
             LOG.warn("Attempted to delete non-existent role_type with id {}", roleTypeId);
