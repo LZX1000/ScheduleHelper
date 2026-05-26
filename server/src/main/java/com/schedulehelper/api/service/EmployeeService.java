@@ -29,7 +29,7 @@ public class EmployeeService {
         final Integer employeeId = employee.getId();
 
         if (employeeId != null) {
-            LOG.warn("Attempted to create employee with defined id {}", employeeId);
+            LOG.warn("Attempted to create employee with predefined id {}", employeeId);
             throw new IllegalArgumentException("New employee must not have an ID.");
         }
 
