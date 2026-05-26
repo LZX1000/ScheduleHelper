@@ -11,7 +11,6 @@ import com.schedulehelper.api.exception.ScheduleHelperException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-
     @ExceptionHandler(EmployeeNotFoundException.class)
     public ResponseEntity<String> handleNotFound(EmployeeNotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
