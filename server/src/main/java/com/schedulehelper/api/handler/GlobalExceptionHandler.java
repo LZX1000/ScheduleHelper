@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.schedulehelper.api.exception.EmployeeNotFoundException;
+import com.schedulehelper.api.exception.RoleTypeNotFoundException;
 import com.schedulehelper.api.exception.ScheduleHelperException;
 
 @RestControllerAdvice
@@ -13,6 +14,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(EmployeeNotFoundException.class)
     public ResponseEntity<String> handleNotFound(EmployeeNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+
+    @ExceptionHandler(RoleTypeNotFoundException.class)
+    public ResponseEntity<String> handleNotFound(RoleTypeNotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
