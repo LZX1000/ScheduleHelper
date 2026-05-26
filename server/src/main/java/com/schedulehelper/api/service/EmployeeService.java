@@ -57,9 +57,7 @@ public class EmployeeService {
     public List<Employee> findByPartialName(
         final Optional<String> first, final Optional<String> last
     ) {
-        // TODO: rename findByName in employeeRepository to findByPartialName
-        //       create string findByName method for employeeRepository
-        return this.employeeRepository.findByName(first.orElse(null), last.orElse(null));
+        return this.employeeRepository.findByPartialName(first.orElse(null), last.orElse(null));
     }
 
     @Transactional

@@ -32,7 +32,7 @@ public class EmployeeRepositoryIT {
         employeeRepository.save(new Employee("Alex"));
     }
 
-    // --- findByName ---
+    // --- findByPartialName ---
 
     static Stream<Arguments> matchingNameCases() {
         return Stream.of(
@@ -50,12 +50,12 @@ public class EmployeeRepositoryIT {
 
     @ParameterizedTest(name = "{0}")
     @MethodSource("matchingNameCases")
-    void findByName_returnsEmployee(
+    void findByPartialName_returnsEmployee(
         final String description,
         final String first, final String last,
         final List<String> contains
     ) {
-        assertThat(this.employeeRepository.findByName(first, last))
+        assertThat(this.employeeRepository.findByPartialName(first, last))
             .extracting(Employee::getFirstName)
             .containsAll(contains);
     }
@@ -75,10 +75,10 @@ public class EmployeeRepositoryIT {
 
     @ParameterizedTest(name = "{0}")
     @MethodSource("noMatchNameCases")
-    void findByName_noMatch_returnsEmpty(
+    void findByPartialName_noMatch_returnsEmpty(
         final String description,
         final String first, final String last
     ) {
-        assertThat(this.employeeRepository.findByName(first, last)).isEmpty();
+        assertThat(this.employeeRepository.findByPartialName(first, last)).isEmpty();
     }
 }
