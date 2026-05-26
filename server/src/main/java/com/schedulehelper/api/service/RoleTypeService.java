@@ -70,5 +70,6 @@ public class RoleTypeService {
         }
 
         this.roleTypeRepository.save(roleType);
+        LOG.info("Updated role_type with id {}", roleTypeId);
     }
 }
