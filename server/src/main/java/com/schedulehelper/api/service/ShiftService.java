@@ -43,7 +43,7 @@ public class ShiftService {
 
         if (shiftId != null) {
             LOG.warn("Attempted to create shift with predefined id {}", shiftId);
-            throw new IllegalArgumentException("New shift must not have an ID.");
+            throw new IllegalArgumentException("New Shift must not have an ID.");
         }
 
         final Shift savedShift = this.shiftRepository.save(shift);
