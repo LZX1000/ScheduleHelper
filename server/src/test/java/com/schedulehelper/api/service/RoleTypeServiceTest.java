@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -41,5 +42,34 @@ public class RoleTypeServiceTest {
 
         final RoleType result = this.roleTypeService.findByTitle("test");
         assertEquals(roleType, result);
+    }
+
+    // --- findByPartialTitle ---
+
+    @Test
+    public void testFindByPartialTitle_empty() {
+        final List<RoleType> expected = List.of();
+        when(this.roleTypeRepository.findByPartialTitle("test")).thenReturn(expected);
+
+        final List<RoleType> result = this.roleTypeService.findByPartialTitle("test");
+        assertEquals(result, expected);
+    }
+
+    @Test
+    public void testFindByPartialTitle_multipleMatches() {
+        final List<RoleType> expected = List.of(mock(RoleType.class), mock(RoleType.class));
+        when(this.roleTypeRepository.findByPartialTitle("test")).thenReturn(expected);
+
+        final List<RoleType> result = this.roleTypeService.findByPartialTitle("test");
+        assertEquals(expected, result);
+    }
+
+    @Test
+    public void testFindByPartialTitle_singleMatch() {
+        final List<RoleType> expected = List.of(mock(RoleType.class));
+        when(this.roleTypeRepository.findByPartialTitle("test")).thenReturn(expected);
+
+        final List<RoleType> result = this.roleTypeService.findByPartialTitle("test");
+        assertEquals(expected, result);
     }
 }
