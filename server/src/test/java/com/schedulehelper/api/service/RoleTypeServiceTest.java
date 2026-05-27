@@ -111,4 +111,20 @@ public class RoleTypeServiceTest {
 
         assertDoesNotThrow(() -> this.roleTypeService.createNew(roleType));
     }
+
+    // --- deleteById ---
+
+    @Test
+    public void testDeleteById_doesNotExist_throwsException() {
+        when(this.roleTypeRepository.existsById(1)).thenReturn(false);
+
+        assertThrows(RoleTypeNotFoundException.class, () -> this.roleTypeService.deleteById(1));
+    }
+
+    @Test
+    public void testDeleteById_success() {
+        when(this.roleTypeRepository.existsById(1)).thenReturn(true);
+
+        assertDoesNotThrow(() -> this.roleTypeService.deleteById(1));
+    }
 }
