@@ -122,7 +122,7 @@ public class RoleTypeServiceTest {
     }
 
     @Test
-    public void testDeleteById_success() {
+    public void testDeleteById() {
         when(this.roleTypeRepository.existsById(1)).thenReturn(true);
 
         assertDoesNotThrow(() -> this.roleTypeService.deleteById(1));
@@ -148,7 +148,7 @@ public class RoleTypeServiceTest {
     }
 
     @Test
-    public void testUpdateById_success() {
+    public void testUpdateById() {
         final RoleType roleType = mock(RoleType.class);
         when(roleType.getId()).thenReturn(1);
         when(this.roleTypeRepository.existsById(1)).thenReturn(true);
