@@ -1,5 +1,6 @@
 package com.schedulehelper.api.service;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
@@ -90,5 +91,24 @@ public class RoleTypeServiceTest {
         final RoleType result = this.roleTypeService.findById(1);
 
         assertEquals(roleType, result);
+    }
+
+    // --- createNew ---
+
+    @Test
+    public void testCreateNew_withId_throwsException() {
+        final RoleType roleType = mock(RoleType.class);
+        when(roleType.getId()).thenReturn(1);
+
+        assertThrows(IllegalArgumentException.class, () -> this.roleTypeService.createNew(roleType));
+    }
+
+    @Test
+    public void testCreateNew() {
+        final RoleType roleType = mock(RoleType.class);
+        when(roleType.getId()).thenReturn(null);
+        when(this.roleTypeRepository.save(roleType)).thenReturn(roleType);
+
+        assertDoesNotThrow(() -> this.roleTypeService.createNew(roleType));
     }
 }
