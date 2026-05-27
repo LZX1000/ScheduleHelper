@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.schedulehelper.api.entity.RoleType;
-import com.schedulehelper.api.exception.EmployeeNotFoundException;
 import com.schedulehelper.api.exception.RoleTypeNotFoundException;
 import com.schedulehelper.api.repository.RoleTypeRepository;
 
@@ -79,7 +78,7 @@ public class RoleTypeService {
         }
         if (!this.roleTypeRepository.existsById(roleTypeId)) {
             LOG.warn("Attempted to update non-existent role_type with id {}", roleTypeId);
-            throw new EmployeeNotFoundException(roleTypeId);
+            throw new RoleTypeNotFoundException(roleTypeId);
         }
 
         this.roleTypeRepository.save(roleType);
