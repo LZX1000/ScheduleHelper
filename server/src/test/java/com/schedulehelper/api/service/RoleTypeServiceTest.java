@@ -127,4 +127,32 @@ public class RoleTypeServiceTest {
 
         assertDoesNotThrow(() -> this.roleTypeService.deleteById(1));
     }
+
+    // --- updateById ---
+
+    @Test
+    public void testUpdateById_nullId_throwsException() {
+        final RoleType roleType = mock(RoleType.class);
+        when(roleType.getId()).thenReturn(null);
+
+        assertThrows(IllegalArgumentException.class, () -> this.roleTypeService.updateById(roleType));
+    }
+
+    @Test
+    public void testUpdateById_doesNotExist_throwsException() {
+        final RoleType roleType = mock(RoleType.class);
+        when(roleType.getId()).thenReturn(1);
+        when(this.roleTypeRepository.existsById(1)).thenReturn(false);
+
+        assertThrows(RoleTypeNotFoundException.class, () -> this.roleTypeService.updateById(roleType));
+    }
+
+    @Test
+    public void testUpdateById_success() {
+        final RoleType roleType = mock(RoleType.class);
+        when(roleType.getId()).thenReturn(1);
+        when(this.roleTypeRepository.existsById(1)).thenReturn(true);
+
+        assertDoesNotThrow(() -> this.roleTypeService.updateById(roleType));
+    }
 }
