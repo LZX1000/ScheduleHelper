@@ -72,4 +72,23 @@ public class RoleTypeServiceTest {
         final List<RoleType> result = this.roleTypeService.findByPartialTitle("test");
         assertEquals(expected, result);
     }
+
+    // --- findById ---
+
+    @Test
+    public void testFindById_notFound() {
+        when(this.roleTypeRepository.findById(99)).thenReturn(Optional.empty());
+
+        assertThrows(RoleTypeNotFoundException.class, () -> this.roleTypeService.findById(99));
+    }
+
+    @Test
+    public void testFindById() {
+        final RoleType roleType = mock(RoleType.class);
+        when(this.roleTypeRepository.findById(1)).thenReturn(Optional.of(roleType));
+
+        final RoleType result = this.roleTypeService.findById(1);
+
+        assertEquals(roleType, result);
+    }
 }
