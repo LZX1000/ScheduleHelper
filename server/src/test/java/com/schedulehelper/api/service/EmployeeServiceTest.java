@@ -35,7 +35,7 @@ public class EmployeeServiceTest {
         final Employee employee = mock(Employee.class);
         when(employee.getId()).thenReturn(1);
 
-        assertThrows(IllegalArgumentException.class, () -> employeeService.createNew(employee));
+        assertThrows(IllegalArgumentException.class, () -> this.employeeService.createNew(employee));
     }
 
     @Test
@@ -46,7 +46,7 @@ public class EmployeeServiceTest {
         when(savedEmployee.getId()).thenReturn(null);
         when(this.employeeRepository.save(employee)).thenReturn(savedEmployee);
 
-        assertThrows(IdGenerationFailedException.class, () -> employeeService.createNew(employee));
+        assertThrows(IdGenerationFailedException.class, () -> this.employeeService.createNew(employee));
     }
 
     @Test
@@ -57,7 +57,7 @@ public class EmployeeServiceTest {
         when(savedEmployee.getId()).thenReturn(1);
         when(this.employeeRepository.save(employee)).thenReturn(savedEmployee);
 
-        assertDoesNotThrow(() -> employeeService.createNew(employee));
+        assertDoesNotThrow(() -> this.employeeService.createNew(employee));
     }
 
     // --- updateById ---
@@ -67,25 +67,25 @@ public class EmployeeServiceTest {
         final Employee employee = mock(Employee.class);
         when(employee.getId()).thenReturn(null);
 
-        assertThrows(IllegalArgumentException.class, () -> employeeService.updateById(employee));
+        assertThrows(IllegalArgumentException.class, () -> this.employeeService.updateById(employee));
     }
 
     @Test
     public void testUpdateById_doesNotExist_throwsException() {
         final Employee employee = mock(Employee.class);
         when(employee.getId()).thenReturn(1);
-        when(employeeRepository.existsById(1)).thenReturn(false);
+        when(this.employeeRepository.existsById(1)).thenReturn(false);
 
-        assertThrows(EmployeeNotFoundException.class, () -> employeeService.updateById(employee));
+        assertThrows(EmployeeNotFoundException.class, () -> this.employeeService.updateById(employee));
     }
 
     @Test
     public void testUpdateById_success() {
         final Employee employee = mock(Employee.class);
         when(employee.getId()).thenReturn(1);
-        when(employeeRepository.existsById(1)).thenReturn(true);
+        when(this.employeeRepository.existsById(1)).thenReturn(true);
 
-        assertDoesNotThrow(() -> employeeService.updateById(employee));
+        assertDoesNotThrow(() -> this.employeeService.updateById(employee));
     }
 
     // --- findByPartialName ---
@@ -93,9 +93,9 @@ public class EmployeeServiceTest {
     @Test
     public void testFindByPartialName_bothNames() {
         final List<Employee> expected = List.of(mock(Employee.class));
-        when(employeeRepository.findByPartialName("John", "Smith")).thenReturn(expected);
+        when(this.employeeRepository.findByPartialName("John", "Smith")).thenReturn(expected);
 
-        final List<Employee> result = employeeService.findByPartialName(
+        final List<Employee> result = this.employeeService.findByPartialName(
             Optional.of("John"), Optional.of("Smith")
         );
 
@@ -105,9 +105,9 @@ public class EmployeeServiceTest {
     @Test
     public void testFindByPartialName_nullNames() {
         final List<Employee> expected = List.of(mock(Employee.class));
-        when(employeeRepository.findByPartialName(null, null)).thenReturn(expected);
+        when(this.employeeRepository.findByPartialName(null, null)).thenReturn(expected);
 
-        final List<Employee> result = employeeService.findByPartialName(
+        final List<Employee> result = this.employeeService.findByPartialName(
             Optional.empty(), Optional.empty()
         );
 
@@ -118,16 +118,16 @@ public class EmployeeServiceTest {
 
     @Test
     public void testDeleteById_doesNotExist_throwsException() {
-        when(employeeRepository.existsById(1)).thenReturn(false);
+        when(this.employeeRepository.existsById(1)).thenReturn(false);
 
-        assertThrows(EmployeeNotFoundException.class, () -> employeeService.deleteById(1));
+        assertThrows(EmployeeNotFoundException.class, () -> this.employeeService.deleteById(1));
     }
 
     @Test
     public void testDeleteById_success() {
-        when(employeeRepository.existsById(1)).thenReturn(true);
+        when(this.employeeRepository.existsById(1)).thenReturn(true);
 
-        assertDoesNotThrow(() -> employeeService.deleteById(1));
+        assertDoesNotThrow(() -> this.employeeService.deleteById(1));
     }
 
     // --- findById ---
@@ -135,17 +135,17 @@ public class EmployeeServiceTest {
     @Test
     public void testFindById_success() {
         final Employee employee = mock(Employee.class);
-        when(employeeRepository.findById(1)).thenReturn(Optional.of(employee));
+        when(this.employeeRepository.findById(1)).thenReturn(Optional.of(employee));
 
-        final Employee result = employeeService.findById(1);
+        final Employee result = this.employeeService.findById(1);
 
         assertEquals(employee, result);
     }
 
     @Test
     public void testFindById_notFound() {
-        when(employeeRepository.findById(99)).thenReturn(Optional.empty());
+        when(this.employeeRepository.findById(99)).thenReturn(Optional.empty());
 
-        assertThrows(EmployeeNotFoundException.class, () -> employeeService.findById(99));
+        assertThrows(EmployeeNotFoundException.class, () -> this.employeeService.findById(99));
     }
 }

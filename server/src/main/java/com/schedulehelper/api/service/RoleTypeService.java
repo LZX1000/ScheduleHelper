@@ -21,7 +21,7 @@ public class RoleTypeService {
 
     @Autowired
     public RoleTypeService(final RoleTypeRepository roleTypeRepository) {
-        this. roleTypeRepository = roleTypeRepository;
+        this.roleTypeRepository = roleTypeRepository;
     }
 
     @Transactional(readOnly = true)
