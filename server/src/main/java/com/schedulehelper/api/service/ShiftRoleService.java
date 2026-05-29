@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.schedulehelper.api.entity.ShiftRole;
-import com.schedulehelper.api.exception.ShiftNotFoundException;
+import com.schedulehelper.api.exception.ShiftRoleNotFoundException;
 import com.schedulehelper.api.repository.ShiftRoleRepository;
 
 @Service
@@ -24,7 +24,7 @@ public class ShiftRoleService {
     @Transactional(readOnly = true)
     public ShiftRole findById(final Integer id) {
         return this.shiftRoleRepository.findById(id)
-            .orElseThrow(() -> new ShiftNotFoundException(id));
+            .orElseThrow(() -> new ShiftRoleNotFoundException(id));
     }
 
     @Transactional
@@ -45,7 +45,7 @@ public class ShiftRoleService {
     public void deleteById(final Integer shiftRoleId) {
         if (!this.shiftRoleRepository.existsById(shiftRoleId)) {
             LOG.warn("Attempted to delete non-existent shift_role with id {}", shiftRoleId);
-            throw new ShiftNotFoundException(shiftRoleId);
+            throw new ShiftRoleNotFoundException(shiftRoleId);
         }
         
         this.shiftRoleRepository.deleteById(shiftRoleId);
@@ -62,7 +62,7 @@ public class ShiftRoleService {
         }
         if (!this.shiftRoleRepository.existsById(shiftRoleId)) {
             LOG.warn("Attempted to update non-existent shift_role with id {}", shiftRoleId);
-            throw new ShiftNotFoundException(shiftRoleId);
+            throw new ShiftRoleNotFoundException(shiftRoleId);
         }
 
         this.shiftRoleRepository.save(shiftRole);

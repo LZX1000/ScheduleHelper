@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.schedulehelper.api.exception.EmployeeNotFoundException;
 import com.schedulehelper.api.exception.RoleTypeNotFoundException;
 import com.schedulehelper.api.exception.ScheduleHelperException;
+import com.schedulehelper.api.exception.ShiftNotFoundException;
+import com.schedulehelper.api.exception.ShiftRoleNotFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -18,6 +20,16 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(RoleTypeNotFoundException.class)
     public ResponseEntity<String> handleNotFound(RoleTypeNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+
+    @ExceptionHandler(ShiftNotFoundException.class)
+    public ResponseEntity<String> handleNotFound(ShiftNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+
+    @ExceptionHandler(ShiftRoleNotFoundException.class)
+    public ResponseEntity<String> handleNotFound(ShiftRoleNotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
