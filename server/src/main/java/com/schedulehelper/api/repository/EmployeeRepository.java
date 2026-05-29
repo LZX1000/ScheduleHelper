@@ -29,5 +29,5 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
               + "AND LOWER(last_name) LIKE '%' || LOWER(:last) || '%'",
         nativeQuery = true
     )
-    List<Employee> findByName(@Param("first") String first, @Param("last") String last);
+    List<Employee> findByPartialName(@Param("first") String first, @Param("last") String last);
 }

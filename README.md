@@ -98,7 +98,10 @@ ScheduleHelper/
     │   ├── main/
     │   │   ├── java/com/schedulehelper/api/
     │   │   │   ├── entity/         # JPA entities
+    │   │   │   ├── exception/      # Custom exceptions
+    │   │   │   ├── handler/        # Global exception handler
     │   │   │   ├── repository/     # Spring Data JPA repositories
+    │   │   │   ├── service/        # Business logic layer
     │   │   │   └── ScheduleHelperApiApplication.java
     │   │   └── resources/
     │   │       └── application.properties
@@ -106,6 +109,7 @@ ScheduleHelper/
     │       └── java/com/schedulehelper/api/
     │           ├── entity/         # Entity unit tests
     │           └── repository/     # Repository integration tests
+    │           └── service/        # Service unit tests
     └── pom.xml
 ```
 
