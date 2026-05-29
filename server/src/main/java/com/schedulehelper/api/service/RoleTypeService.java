@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.schedulehelper.api.entity.RoleType;
+import com.schedulehelper.api.exception.IdGenerationFailedException;
 import com.schedulehelper.api.exception.RoleTypeNotFoundException;
 import com.schedulehelper.api.repository.RoleTypeRepository;
 
@@ -53,8 +54,14 @@ public class RoleTypeService {
             throw new IllegalArgumentException("New RoleType must not have an ID.");
         }
 
-        final RoleType savedRoleType = this.roleTypeRepository.save(roleType);
-        LOG.info("Created new employee with id {}", savedRoleType.getId());
+        final Integer savedRoleTypeId = this.roleTypeRepository.save(roleType).getId();
+
+        if (savedRoleTypeId == null) {
+            LOG.warn("Id generation failed for new role_type.");
+            throw new IdGenerationFailedException("RoleType");
+        }
+
+        LOG.info("Created new employee with id {}", savedRoleTypeId);
     }
 
     @Transactional

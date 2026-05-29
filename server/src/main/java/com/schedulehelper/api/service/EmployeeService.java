@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.schedulehelper.api.entity.Employee;
 import com.schedulehelper.api.exception.EmployeeNotFoundException;
+import com.schedulehelper.api.exception.IdGenerationFailedException;
 import com.schedulehelper.api.repository.EmployeeRepository;
 
 @Service
@@ -33,8 +34,14 @@ public class EmployeeService {
             throw new IllegalArgumentException("New employee must not have an ID.");
         }
 
-        this.employeeRepository.save(employee);
-        LOG.info("Created new employee with id {}", employeeId);
+        final Integer savedEmployeeId = this.employeeRepository.save(employee).getId();
+
+        if (savedEmployeeId == null) {
+            LOG.warn("Id generation failed for new employee.");
+            throw new IdGenerationFailedException("employee");
+        }
+
+        LOG.info("Created new employee with id {}", savedEmployeeId);
     }
 
     @Transactional

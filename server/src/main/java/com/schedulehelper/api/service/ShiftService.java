@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.schedulehelper.api.entity.Shift;
+import com.schedulehelper.api.exception.IdGenerationFailedException;
 import com.schedulehelper.api.exception.ShiftNotFoundException;
 import com.schedulehelper.api.repository.ShiftRepository;
 
@@ -46,8 +47,14 @@ public class ShiftService {
             throw new IllegalArgumentException("New Shift must not have an ID.");
         }
 
-        final Shift savedShift = this.shiftRepository.save(shift);
-        LOG.info("Created new shift with id {}", savedShift.getId());
+        final Integer savedShiftId = this.shiftRepository.save(shift).getId();
+
+        if (savedShiftId == null) {
+            LOG.warn("Id generation failed for new shift.");
+            throw new IdGenerationFailedException("Shift");
+        }
+
+        LOG.info("Created new shift with id {}", savedShiftId);
     }
 
 

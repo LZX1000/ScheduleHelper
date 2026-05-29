@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.schedulehelper.api.entity.ShiftRole;
+import com.schedulehelper.api.exception.IdGenerationFailedException;
 import com.schedulehelper.api.exception.ShiftRoleNotFoundException;
 import com.schedulehelper.api.repository.ShiftRoleRepository;
 
@@ -36,8 +37,14 @@ public class ShiftRoleService {
             throw new IllegalArgumentException("New ShiftRole must not have an ID.");
         }
 
-        final ShiftRole savedShiftRole = this.shiftRoleRepository.save(shiftRole);
-        LOG.info("Created new shift with id {}", savedShiftRole.getId());
+        final Integer savedShiftRoleId = this.shiftRoleRepository.save(shiftRole).getId();
+
+        if (savedShiftRoleId == null) {
+            LOG.warn("Id generation failed for new shift_role.");
+            throw new IdGenerationFailedException("ShiftRole");
+        }
+    
+        LOG.info("Created new shift with id {}", savedShiftRoleId);
     }
 
 

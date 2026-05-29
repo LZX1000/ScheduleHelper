@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.schedulehelper.api.exception.EmployeeNotFoundException;
+import com.schedulehelper.api.exception.IdGenerationFailedException;
 import com.schedulehelper.api.exception.RoleTypeNotFoundException;
 import com.schedulehelper.api.exception.ScheduleHelperException;
 import com.schedulehelper.api.exception.ShiftNotFoundException;
@@ -31,6 +32,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ShiftRoleNotFoundException.class)
     public ResponseEntity<String> handleNotFound(ShiftRoleNotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+
+    @ExceptionHandler(IdGenerationFailedException.class)
+    public ResponseEntity<String> handleGenerationFailed(IdGenerationFailedException e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
     }
 
     @ExceptionHandler(ScheduleHelperException.class)
