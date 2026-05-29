@@ -14,6 +14,19 @@ import com.schedulehelper.api.exception.EmployeeNotFoundException;
 import com.schedulehelper.api.exception.IdGenerationFailedException;
 import com.schedulehelper.api.repository.EmployeeRepository;
 
+/**
+ * Service layer for managing {@link Employee} entities.
+ *
+ * <p>This service provides create, update, lookup, and delete operations.
+ * IDs are required for modification actions, such as updates and deletes,
+ * but are rejected when creating new entries.
+ * 
+ * <p>This service throws {@link EmployeeNotFoundException} when an employee cannot be found,
+ * and {@link IdGenerationFailedException}
+ *  if the persistence layer fails to assign an ID during creation.
+ *
+ * <p>All write operations are executed within transactional boundaries.
+ */
 @Service
 public class EmployeeService {
     private static final Logger LOG = LoggerFactory.getLogger(EmployeeService.class);
@@ -25,10 +38,21 @@ public class EmployeeService {
         this.employeeRepository = employeeRepository;
     }
 
+    /**
+     * Creates a new {@link Employee} in the database.
+     *
+     * <p>This method requires that the provided employee has no predefined ID.
+     * If an ID is present, the creation attempt is rejected. After creating
+     * the employee, the method verifies that an ID was successfully generated.
+     *
+     * @param employee the employee entity to create; must not have an ID
+     *
+     * @throws IllegalArgumentException if the employee already has an ID
+     * @throws IdGenerationFailedException if the persistence layer fails to generate an ID
+     */
     @Transactional
     public void createNew(final Employee employee) {
         final Integer employeeId = employee.getId();
-
         if (employeeId != null) {
             LOG.warn("Attempted to create employee with predefined id {}", employeeId);
             throw new IllegalArgumentException("New employee must not have an ID.");
@@ -44,10 +68,22 @@ public class EmployeeService {
         LOG.info("Created new employee with id {}", savedEmployeeId);
     }
 
+    /**
+     * Updates a given {@link Employee} in the persistence layer.
+     *
+     * <p>This method requires that the provided employee has an ID.
+     * If the ID is missing or does not correspond to an existing employee,
+     * the update attempt is rejected.
+     *
+     * @param employee the updated employee entity; must have an ID
+     *
+     * @throws IllegalArgumentException if the employee does not have an ID
+     * @throws EmployeeNotFoundException if the ID is not in the persistence layer
+     */
     @Transactional
     public void updateById(final Employee employee) {
         final Integer employeeId = employee.getId();
-        
+
         if (employeeId == null) {
             LOG.warn("Attempted to update employee with null id");
             throw new IllegalArgumentException("Employee must have an ID to be updated.");
@@ -58,8 +94,20 @@ public class EmployeeService {
         }
 
         this.employeeRepository.save(employee);
+        LOG.info("Updated employee with id {}", employeeId);
     }
 
+    /**
+     * Finds matching {@link Employee Employees} by partial first and/or last name.
+     *
+     * <p>Empty optionals are treated as null values,
+     * meaning that name component is not used to filter results.
+     * 
+     * @param first optional first name fragment
+     * @param last optional last name fragment
+     * 
+     * @return matching employees
+     */
     @Transactional(readOnly = true)
     public List<Employee> findByPartialName(
         final Optional<String> first, final Optional<String> last
@@ -67,6 +115,15 @@ public class EmployeeService {
         return this.employeeRepository.findByPartialName(first.orElse(null), last.orElse(null));
     }
 
+    /**
+     * Deletes an {@link Employee} from the persistence layer by ID.
+     *
+     * <p>If no employee exists with the given ID, the deletion attempt is rejected.
+     *
+     * @param employeeId the ID of the employee to delete
+     *
+     * @throws EmployeeNotFoundException if no employee exists with the given ID
+     */
     @Transactional
     public void deleteById(final Integer employeeId) {
         if (!this.employeeRepository.existsById(employeeId)) {
@@ -78,9 +135,18 @@ public class EmployeeService {
         LOG.info("Deleted employee with id {}", employeeId);
     }
 
+    /**
+     * Finds an {@link Employee} in the persistence layer by ID.
+     *
+     * @param employeeId the ID of the employee to find
+     * 
+     * @return the matching employee
+     *
+     * @throws EmployeeNotFoundException if the ID is not in the persistence layer
+     */
     @Transactional(readOnly = true)
-    public Employee findById(final Integer id) {
-        return this.employeeRepository.findById(id)
-            .orElseThrow(() -> new EmployeeNotFoundException(id));
+    public Employee findById(final Integer employeeId) {
+        return this.employeeRepository.findById(employeeId)
+            .orElseThrow(() -> new EmployeeNotFoundException(employeeId));
     }
 }
