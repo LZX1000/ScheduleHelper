@@ -17,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.schedulehelper.api.entity.Employee;
 import com.schedulehelper.api.exception.EmployeeNotFoundException;
+import com.schedulehelper.api.exception.IdGenerationFailedException;
 import com.schedulehelper.api.repository.EmployeeRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -38,9 +39,23 @@ public class EmployeeServiceTest {
     }
 
     @Test
+    public void testCreateNew_idGenerationFailed_throwsException() {
+        final Employee employee = mock(Employee.class);
+        when(employee.getId()).thenReturn(null);
+        final Employee savedEmployee = mock(Employee.class);
+        when(savedEmployee.getId()).thenReturn(null);
+        when(this.employeeRepository.save(employee)).thenReturn(savedEmployee);
+
+        assertThrows(IdGenerationFailedException.class, () -> employeeService.createNew(employee));
+    }
+
+    @Test
     public void testCreateNew_success() {
         final Employee employee = mock(Employee.class);
         when(employee.getId()).thenReturn(null);
+        final Employee savedEmployee = mock(Employee.class);
+        when(savedEmployee.getId()).thenReturn(1);
+        when(this.employeeRepository.save(employee)).thenReturn(savedEmployee);
 
         assertDoesNotThrow(() -> employeeService.createNew(employee));
     }

@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.schedulehelper.api.entity.RoleType;
+import com.schedulehelper.api.exception.IdGenerationFailedException;
 import com.schedulehelper.api.exception.RoleTypeNotFoundException;
 import com.schedulehelper.api.repository.RoleTypeRepository;
 
@@ -104,10 +105,23 @@ public class RoleTypeServiceTest {
     }
 
     @Test
+    public void testCreateNew_idGenerationFailed_throwsException() {
+        final RoleType roleType = mock(RoleType.class);
+        when(roleType.getId()).thenReturn(null);
+        final RoleType savedRoleType = mock(RoleType.class);
+        when(savedRoleType.getId()).thenReturn(null);
+        when(this.roleTypeRepository.save(roleType)).thenReturn(savedRoleType);
+
+        assertThrows(IdGenerationFailedException.class, () -> this.roleTypeService.createNew(roleType));
+    }
+
+    @Test
     public void testCreateNew() {
         final RoleType roleType = mock(RoleType.class);
         when(roleType.getId()).thenReturn(null);
-        when(this.roleTypeRepository.save(roleType)).thenReturn(roleType);
+        final RoleType savedRoleType = mock(RoleType.class);
+        when(savedRoleType.getId()).thenReturn(1);
+        when(this.roleTypeRepository.save(roleType)).thenReturn(savedRoleType);
 
         assertDoesNotThrow(() -> this.roleTypeService.createNew(roleType));
     }
