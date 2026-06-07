@@ -92,18 +92,21 @@ public class RoleTypeService {
      *
      * @param roleType the role type entity to create; must not have an ID
      *
+     * @return created role type
+     * 
      * @throws IllegalArgumentException if the role type already has an ID
      * @throws IdGenerationFailedException if the persistence layer fails to generate an ID
      */
     @Transactional
-    public void createNew(final RoleType roleType) {
+    public RoleType createNew(final RoleType roleType) {
         final Integer roleTypeId = roleType.getId();
         if (roleTypeId != null) {
             LOG.warn("Attempted to create role_type with predefined id {}", roleTypeId);
             throw new IllegalArgumentException("New RoleType must not have an ID.");
         }
 
-        final Integer savedRoleTypeId = this.roleTypeRepository.save(roleType).getId();
+        final RoleType savedRoleType = this.roleTypeRepository.save(roleType);
+        final Integer savedRoleTypeId = savedRoleType.getId();
 
         if (savedRoleTypeId == null) {
             LOG.warn("Id generation failed for new role_type.");
@@ -111,6 +114,7 @@ public class RoleTypeService {
         }
 
         LOG.info("Created new employee with id {}", savedRoleTypeId);
+        return savedRoleType;
     }
 
     /**
@@ -142,11 +146,13 @@ public class RoleTypeService {
      *
      * @param roleType the updated role type entity; must have an ID
      *
+     * @return updated role type
+     * 
      * @throws IllegalArgumentException if the role type does not have an ID
      * @throws RoleTypeNotFoundException if the ID is not in the persistence layer
      */
     @Transactional
-    public void updateById(final RoleType roleType) {
+    public RoleType updateById(final RoleType roleType) {
         final Integer roleTypeId = roleType.getId();
 
         if (roleTypeId == null) {
@@ -158,7 +164,8 @@ public class RoleTypeService {
             throw new RoleTypeNotFoundException(roleTypeId);
         }
 
-        this.roleTypeRepository.save(roleType);
+        final RoleType savedRoleType = this.roleTypeRepository.save(roleType);
         LOG.info("Updated role_type with id {}", roleTypeId);
+        return savedRoleType;
     }
 }

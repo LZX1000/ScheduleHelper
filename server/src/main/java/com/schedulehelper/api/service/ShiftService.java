@@ -76,19 +76,22 @@ public class ShiftService {
      * the shift, the method verifies that an ID was successfully generated.
      *
      * @param shift the shift entity to create; must not have an ID
+     * 
+     * @return created shift
      *
      * @throws IllegalArgumentException if the shift already has an ID
      * @throws IdGenerationFailedException if the persistence layer fails to generate an ID
      */
     @Transactional
-    public void createNew(final Shift shift) {
+    public Shift createNew(final Shift shift) {
         final Integer shiftId = shift.getId();
         if (shiftId != null) {
             LOG.warn("Attempted to create shift with predefined id {}", shiftId);
             throw new IllegalArgumentException("New Shift must not have an ID.");
         }
 
-        final Integer savedShiftId = this.shiftRepository.save(shift).getId();
+        final Shift savedShift = this.shiftRepository.save(shift);
+        final Integer savedShiftId = savedShift.getId();
 
         if (savedShiftId == null) {
             LOG.warn("Id generation failed for new shift.");
@@ -96,6 +99,7 @@ public class ShiftService {
         }
 
         LOG.info("Created new shift with id {}", savedShiftId);
+        return savedShift;
     }
 
     /**
@@ -126,12 +130,14 @@ public class ShiftService {
      * the update attempt is rejected.
      *
      * @param shift the updated shift entity; must have an ID
+     * 
+     * @return updated shift
      *
      * @throws IllegalArgumentException if the shift does not have an ID
      * @throws ShiftNotFoundException if the ID is not in the persistence layer
      */
     @Transactional
-    public void updateById(final Shift shift) {
+    public Shift updateById(final Shift shift) {
         final Integer shiftId = shift.getId();
         
         if (shiftId == null) {
@@ -143,7 +149,8 @@ public class ShiftService {
             throw new ShiftNotFoundException(shiftId);
         }
 
-        this.shiftRepository.save(shift);
+        final Shift updatedShift = this.shiftRepository.save(shift);
         LOG.info("Updated shift with id {}", shiftId);
+        return updatedShift;
     }
 }

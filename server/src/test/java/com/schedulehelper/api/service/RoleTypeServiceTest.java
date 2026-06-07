@@ -123,7 +123,7 @@ public class RoleTypeServiceTest {
         when(savedRoleType.getId()).thenReturn(1);
         when(this.roleTypeRepository.save(roleType)).thenReturn(savedRoleType);
 
-        assertDoesNotThrow(() -> this.roleTypeService.createNew(roleType));
+        assertEquals(savedRoleType, this.roleTypeService.createNew(roleType));
     }
 
     // --- deleteById ---
@@ -166,7 +166,8 @@ public class RoleTypeServiceTest {
         final RoleType roleType = mock(RoleType.class);
         when(roleType.getId()).thenReturn(1);
         when(this.roleTypeRepository.existsById(1)).thenReturn(true);
+        when(this.roleTypeRepository.save(roleType)).thenReturn(roleType);
 
-        assertDoesNotThrow(() -> this.roleTypeService.updateById(roleType));
+        assertEquals(roleType, this.roleTypeService.updateById(roleType));
     }
 }

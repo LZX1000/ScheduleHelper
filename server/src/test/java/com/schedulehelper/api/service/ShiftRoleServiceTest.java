@@ -75,7 +75,7 @@ public class ShiftRoleServiceTest {
         when(savedShiftRole.getId()).thenReturn(1);
         when(this.shiftRoleRepository.save(shiftRole)).thenReturn(savedShiftRole);
 
-        assertDoesNotThrow(() -> this.shiftRoleService.createNew(shiftRole));
+        assertEquals(savedShiftRole, this.shiftRoleService.createNew(shiftRole));
     }
 
     // --- deleteById ---
@@ -118,7 +118,8 @@ public class ShiftRoleServiceTest {
         final ShiftRole shiftRole = mock(ShiftRole.class);
         when(shiftRole.getId()).thenReturn(1);
         when(this.shiftRoleRepository.existsById(1)).thenReturn(true);
+        when(this.shiftRoleRepository.save(shiftRole)).thenReturn(shiftRole);
 
-        assertDoesNotThrow(() -> this.shiftRoleService.updateById(shiftRole));
+        assertEquals(shiftRole, this.shiftRoleService.updateById(shiftRole));
     }
 }

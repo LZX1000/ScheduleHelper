@@ -57,7 +57,7 @@ public class EmployeeServiceTest {
         when(savedEmployee.getId()).thenReturn(1);
         when(this.employeeRepository.save(employee)).thenReturn(savedEmployee);
 
-        assertDoesNotThrow(() -> this.employeeService.createNew(employee));
+        assertEquals(savedEmployee, this.employeeService.createNew(employee));
     }
 
     // --- updateById ---
@@ -84,8 +84,9 @@ public class EmployeeServiceTest {
         final Employee employee = mock(Employee.class);
         when(employee.getId()).thenReturn(1);
         when(this.employeeRepository.existsById(1)).thenReturn(true);
+        when(this.employeeRepository.save(employee)).thenReturn(employee);
 
-        assertDoesNotThrow(() -> this.employeeService.updateById(employee));
+        assertEquals(employee, this.employeeService.updateById(employee));
     }
 
     // --- findByPartialName ---

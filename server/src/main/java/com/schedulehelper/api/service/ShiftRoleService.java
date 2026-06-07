@@ -59,18 +59,21 @@ public class ShiftRoleService {
      *
      * @param shiftRole the shift role entity to create; must not have an ID
      *
+     * @return created shift role
+     * 
      * @throws IllegalArgumentException if the shift role already has an ID
      * @throws IdGenerationFailedException if the persistence layer fails to generate an ID
      */
     @Transactional
-    public void createNew(final ShiftRole shiftRole) {
+    public ShiftRole createNew(final ShiftRole shiftRole) {
         final Integer shiftRoleId = shiftRole.getId();
         if (shiftRoleId != null) {
             LOG.warn("Attempted to create shift_role with predefined id {}", shiftRoleId);
             throw new IllegalArgumentException("New ShiftRole must not have an ID.");
         }
 
-        final Integer savedShiftRoleId = this.shiftRoleRepository.save(shiftRole).getId();
+        final ShiftRole savedShiftRole = this.shiftRoleRepository.save(shiftRole);
+        final Integer savedShiftRoleId = savedShiftRole.getId();
 
         if (savedShiftRoleId == null) {
             LOG.warn("Id generation failed for new shift_role.");
@@ -78,6 +81,7 @@ public class ShiftRoleService {
         }
     
         LOG.info("Created new shift with id {}", savedShiftRoleId);
+        return savedShiftRole;
     }
 
     /**
@@ -109,11 +113,13 @@ public class ShiftRoleService {
      *
      * @param shiftRole the updated shift role entity; must have an ID
      *
+     * @return updated shift role
+     * 
      * @throws IllegalArgumentException if the shift role does not have an ID
      * @throws ShiftRoleNotFoundException if the ID is not in the persistence layer
      */
     @Transactional
-    public void updateById(final ShiftRole shiftRole) {
+    public ShiftRole updateById(final ShiftRole shiftRole) {
         final Integer shiftRoleId = shiftRole.getId();
 
         if (shiftRoleId == null) {
@@ -125,7 +131,8 @@ public class ShiftRoleService {
             throw new ShiftRoleNotFoundException(shiftRoleId);
         }
 
-        this.shiftRoleRepository.save(shiftRole);
+        final ShiftRole savedShiftRole = this.shiftRoleRepository.save(shiftRole);
         LOG.info("Updated shift with id {}", shiftRoleId);
+        return savedShiftRole;
     }
 }

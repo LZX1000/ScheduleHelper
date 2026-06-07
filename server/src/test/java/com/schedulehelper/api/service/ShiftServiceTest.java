@@ -99,7 +99,7 @@ public class ShiftServiceTest {
         when(savedshift.getId()).thenReturn(1);
         when(this.shiftRepository.save(shift)).thenReturn(savedshift);
 
-        assertDoesNotThrow(() -> this.shiftService.createNew(shift));
+        assertEquals(savedshift, this.shiftService.createNew(shift));
     }
 
     // --- deleteById ---
@@ -142,7 +142,8 @@ public class ShiftServiceTest {
         final Shift shift = mock(Shift.class);
         when(shift.getId()).thenReturn(1);
         when(this.shiftRepository.existsById(1)).thenReturn(true);
+        when(this.shiftRepository.save(shift)).thenReturn(shift);
 
-        assertDoesNotThrow(() -> this.shiftService.updateById(shift));
+        assertEquals(shift, this.shiftService.updateById(shift));
     }
 }

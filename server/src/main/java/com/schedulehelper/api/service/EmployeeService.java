@@ -47,18 +47,21 @@ public class EmployeeService {
      *
      * @param employee the employee entity to create; must not have an ID
      *
+     * @return created employee
+     * 
      * @throws IllegalArgumentException if the employee already has an ID
      * @throws IdGenerationFailedException if the persistence layer fails to generate an ID
      */
     @Transactional
-    public void createNew(final Employee employee) {
+    public Employee createNew(final Employee employee) {
         final Integer employeeId = employee.getId();
         if (employeeId != null) {
             LOG.warn("Attempted to create employee with predefined id {}", employeeId);
             throw new IllegalArgumentException("New employee must not have an ID.");
         }
 
-        final Integer savedEmployeeId = this.employeeRepository.save(employee).getId();
+        final Employee savedEmployee = this.employeeRepository.save(employee);
+        final Integer savedEmployeeId = savedEmployee.getId();
 
         if (savedEmployeeId == null) {
             LOG.warn("Id generation failed for new employee.");
@@ -66,6 +69,7 @@ public class EmployeeService {
         }
 
         LOG.info("Created new employee with id {}", savedEmployeeId);
+        return savedEmployee;
     }
 
     /**
@@ -76,12 +80,14 @@ public class EmployeeService {
      * the update attempt is rejected.
      *
      * @param employee the updated employee entity; must have an ID
-     *
+     * 
+     * @return updated employee
+     * 
      * @throws IllegalArgumentException if the employee does not have an ID
      * @throws EmployeeNotFoundException if the ID is not in the persistence layer
      */
     @Transactional
-    public void updateById(final Employee employee) {
+    public Employee updateById(final Employee employee) {
         final Integer employeeId = employee.getId();
 
         if (employeeId == null) {
@@ -93,8 +99,9 @@ public class EmployeeService {
             throw new EmployeeNotFoundException(employeeId);
         }
 
-        this.employeeRepository.save(employee);
+        final Employee savedEmployee = this.employeeRepository.save(employee);
         LOG.info("Updated employee with id {}", employeeId);
+        return savedEmployee;
     }
 
     /**
