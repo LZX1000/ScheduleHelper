@@ -18,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.schedulehelper.api.entity.Employee;
 import com.schedulehelper.api.exception.EmployeeNotFoundException;
 import com.schedulehelper.api.exception.IdGenerationFailedException;
+import com.schedulehelper.api.exception.MissingEmployeeContent;
 import com.schedulehelper.api.repository.EmployeeRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -36,6 +37,11 @@ public class EmployeeServiceTest {
         when(employee.getId()).thenReturn(1);
 
         assertThrows(IllegalArgumentException.class, () -> this.employeeService.createNew(employee));
+    }
+
+    @Test
+    public void testCreateNew_missingEmployeeContent_throwsException() {
+        assertThrows(MissingEmployeeContent.class, () -> this.employeeService.createNew(null));
     }
 
     @Test
@@ -71,6 +77,11 @@ public class EmployeeServiceTest {
     }
 
     @Test
+    public void testUpdateById_missingEmployeeContent_throwsException() {
+        assertThrows(MissingEmployeeContent.class, () -> this.employeeService.updateById(null));
+    }
+
+    @Test
     public void testUpdateById_doesNotExist_throwsException() {
         final Employee employee = mock(Employee.class);
         when(employee.getId()).thenReturn(1);
@@ -98,6 +109,28 @@ public class EmployeeServiceTest {
 
         final List<Employee> result = this.employeeService.findByPartialName(
             Optional.of("John"), Optional.of("Smith")
+        );
+
+        assertEquals(expected, result);
+    }
+
+    @Test public void testFindByPartialName_firstName() {
+        final List<Employee> expected = List.of(mock(Employee.class));
+        when(this.employeeRepository.findByPartialName("John", null)).thenReturn(expected);
+
+        final List<Employee> result = this.employeeService.findByPartialName(
+            Optional.of("John"), Optional.empty()
+        );
+
+        assertEquals(expected, result);
+    }
+
+    @Test public void testFindByPartialName_lastName() {
+        final List<Employee> expected = List.of(mock(Employee.class));
+        when(this.employeeRepository.findByPartialName(null, "Smith")).thenReturn(expected);
+
+        final List<Employee> result = this.employeeService.findByPartialName(
+            Optional.empty(), Optional.of("Smith")
         );
 
         assertEquals(expected, result);
