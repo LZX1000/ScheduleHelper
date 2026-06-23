@@ -38,35 +38,7 @@ public class ShiftService {
         this.shiftRepository = shiftRepository;
     }
 
-    /**
-     * Finds matching {@link Shift Shifts} by a start time range.
-     * 
-     * @param start beginning of the range
-     * @param end end of the range
-     * 
-     * @return matching shifts
-     */
-    @Transactional(readOnly = true)
-    public List<Shift> findByStartTimeBetween(
-        final OffsetDateTime start, final OffsetDateTime end
-    ) {
-        return this.shiftRepository.findByStartTimeBetween(start, end);
-    }
-
-    /**
-     * Finds a {@link Shift} in the persistence layer by ID.
-     *
-     * @param shiftId the ID of the shift to find
-     * 
-     * @return the matching shift
-     *
-     * @throws ShiftNotFoundException if the ID is not in the persistence layer
-     */
-    @Transactional(readOnly = true)
-    public Shift findById(final Integer shiftId) {
-        return this.shiftRepository.findById(shiftId)
-            .orElseThrow(() -> new ShiftNotFoundException(shiftId));
-    }
+    // --- Create ---
 
     /**
      * Creates a new {@link Shif} in the database.
@@ -102,25 +74,39 @@ public class ShiftService {
         return savedShift;
     }
 
+    // --- Read ---
+
     /**
-     * Deletes a {@link Shift} from the persistence layer by ID.
-     *
-     * <p>If no shift exists with the given ID, the deletion attempt is rejected.
-     *
-     * @param shiftRoleId the ID of the shift to delete
-     *
-     * @throws ShiftNotFoundException if no shift exists with the given ID
+     * Finds matching {@link Shift Shifts} by a start time range.
+     * 
+     * @param start beginning of the range
+     * @param end end of the range
+     * 
+     * @return matching shifts
      */
-    @Transactional
-    public void deleteById(final Integer shiftId) {
-        if (!this.shiftRepository.existsById(shiftId)) {
-            LOG.warn("Attempted to delete non-existent shift with id {}", shiftId);
-            throw new ShiftNotFoundException(shiftId);
-        }
-        
-        this.shiftRepository.deleteById(shiftId);
-        LOG.info("Deleted shift with id {}", shiftId);
+    @Transactional(readOnly = true)
+    public List<Shift> findByStartTimeBetween(
+        final OffsetDateTime start, final OffsetDateTime end
+    ) {
+        return this.shiftRepository.findByStartTimeBetween(start, end);
     }
+
+    /**
+     * Finds a {@link Shift} in the persistence layer by ID.
+     *
+     * @param shiftId the ID of the shift to find
+     * 
+     * @return the matching shift
+     *
+     * @throws ShiftNotFoundException if the ID is not in the persistence layer
+     */
+    @Transactional(readOnly = true)
+    public Shift findById(final Integer shiftId) {
+        return this.shiftRepository.findById(shiftId)
+            .orElseThrow(() -> new ShiftNotFoundException(shiftId));
+    }
+
+    // --- Update ---
 
     /**
      * Updates a given {@link Shift} in the persistence layer.
@@ -152,5 +138,27 @@ public class ShiftService {
         final Shift updatedShift = this.shiftRepository.save(shift);
         LOG.info("Updated shift with id {}", shiftId);
         return updatedShift;
+    }
+
+    // --- Delete
+
+    /**
+     * Deletes a {@link Shift} from the persistence layer by ID.
+     *
+     * <p>If no shift exists with the given ID, the deletion attempt is rejected.
+     *
+     * @param shiftRoleId the ID of the shift to delete
+     *
+     * @throws ShiftNotFoundException if no shift exists with the given ID
+     */
+    @Transactional
+    public void deleteById(final Integer shiftId) {
+        if (!this.shiftRepository.existsById(shiftId)) {
+            LOG.warn("Attempted to delete non-existent shift with id {}", shiftId);
+            throw new ShiftNotFoundException(shiftId);
+        }
+        
+        this.shiftRepository.deleteById(shiftId);
+        LOG.info("Deleted shift with id {}", shiftId);
     }
 }

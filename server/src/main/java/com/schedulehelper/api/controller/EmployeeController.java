@@ -27,17 +27,15 @@ public class EmployeeController {
         this.employeeService = employeeService;
     }
 
+    // --- Create ---
+
     @PostMapping("")
     // required = false for custom exception in service layer
     public ResponseEntity<Employee> createNew(@RequestBody(required = false) Employee employee) {
         return ResponseEntity.status(HttpStatus.CREATED).body(this.employeeService.createNew(employee));
     }
 
-    @PutMapping("")
-    // required = false for custom exception in service layer
-    public ResponseEntity<Employee> updateById(@RequestBody(required = false) final Employee employee) {
-        return ResponseEntity.status(HttpStatus.OK).body(this.employeeService.updateById(employee));
-    }
+    // --- Read ---
 
     @GetMapping("/search")
     public ResponseEntity<List<Employee>> findByPartialName(
@@ -47,14 +45,24 @@ public class EmployeeController {
         return ResponseEntity.ok(this.employeeService.findByPartialName(partialFirst, partialLast));
     }
 
+    @GetMapping("/{employeeId}")
+    public ResponseEntity<Employee> getById(@PathVariable final Integer employeeId) {
+        return ResponseEntity.ok(this.employeeService.findById(employeeId));
+    }
+
+    // --- Update ---
+
+    @PutMapping("")
+    // required = false for custom exception in service layer
+    public ResponseEntity<Employee> updateById(@RequestBody(required = false) final Employee employee) {
+        return ResponseEntity.status(HttpStatus.OK).body(this.employeeService.updateById(employee));
+    }
+
+    // --- Delete ---
+
     @DeleteMapping("/{employeeId}")
     public ResponseEntity<Void> deleteById(@PathVariable final Integer employeeId) {
         this.employeeService.deleteById(employeeId);
         return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/{employeeId}")
-    public ResponseEntity<Employee> getById(@PathVariable final Integer employeeId) {
-        return ResponseEntity.ok(this.employeeService.findById(employeeId));
     }
 }

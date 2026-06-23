@@ -35,20 +35,7 @@ public class ShiftRoleService {
         this.shiftRoleRepository = shiftRoleRepository;
     }
 
-    /**
-     * Finds a {@link ShiftRole} in the persistence layer by ID.
-     *
-     * @param shiftRoleId the ID of the shift role to find
-     * 
-     * @return the matching shift role
-     *
-     * @throws ShiftRoleNotFoundException if the ID is not in the persistence layer
-     */
-    @Transactional(readOnly = true)
-    public ShiftRole findById(final Integer shiftRoleId) {
-        return this.shiftRoleRepository.findById(shiftRoleId)
-            .orElseThrow(() -> new ShiftRoleNotFoundException(shiftRoleId));
-    }
+    // --- Create ---
 
     /**
      * Creates a new {@link ShifRole} in the database.
@@ -84,25 +71,24 @@ public class ShiftRoleService {
         return savedShiftRole;
     }
 
+    // --- Read ---
+
     /**
-     * Deletes a {@link ShiftRole} from the persistence layer by ID.
+     * Finds a {@link ShiftRole} in the persistence layer by ID.
      *
-     * <p>If no shift role exists with the given ID, the deletion attempt is rejected.
+     * @param shiftRoleId the ID of the shift role to find
+     * 
+     * @return the matching shift role
      *
-     * @param shiftRoleId the ID of the shift role to delete
-     *
-     * @throws ShiftRoleNotFoundException if no shift role exists with the given ID
+     * @throws ShiftRoleNotFoundException if the ID is not in the persistence layer
      */
-    @Transactional
-    public void deleteById(final Integer shiftRoleId) {
-        if (!this.shiftRoleRepository.existsById(shiftRoleId)) {
-            LOG.warn("Attempted to delete non-existent shift_role with id {}", shiftRoleId);
-            throw new ShiftRoleNotFoundException(shiftRoleId);
-        }
-        
-        this.shiftRoleRepository.deleteById(shiftRoleId);
-        LOG.info("Deleted shift with id {}", shiftRoleId);
+    @Transactional(readOnly = true)
+    public ShiftRole findById(final Integer shiftRoleId) {
+        return this.shiftRoleRepository.findById(shiftRoleId)
+            .orElseThrow(() -> new ShiftRoleNotFoundException(shiftRoleId));
     }
+
+    // --- Update ---
 
     /**
      * Updates a given {@link ShiftRole} in the persistence layer.
@@ -134,5 +120,27 @@ public class ShiftRoleService {
         final ShiftRole savedShiftRole = this.shiftRoleRepository.save(shiftRole);
         LOG.info("Updated shift with id {}", shiftRoleId);
         return savedShiftRole;
+    }
+
+    // --- Delete ---
+
+    /**
+     * Deletes a {@link ShiftRole} from the persistence layer by ID.
+     *
+     * <p>If no shift role exists with the given ID, the deletion attempt is rejected.
+     *
+     * @param shiftRoleId the ID of the shift role to delete
+     *
+     * @throws ShiftRoleNotFoundException if no shift role exists with the given ID
+     */
+    @Transactional
+    public void deleteById(final Integer shiftRoleId) {
+        if (!this.shiftRoleRepository.existsById(shiftRoleId)) {
+            LOG.warn("Attempted to delete non-existent shift_role with id {}", shiftRoleId);
+            throw new ShiftRoleNotFoundException(shiftRoleId);
+        }
+        
+        this.shiftRoleRepository.deleteById(shiftRoleId);
+        LOG.info("Deleted shift with id {}", shiftRoleId);
     }
 }

@@ -39,6 +39,8 @@ public class EmployeeService {
         this.employeeRepository = employeeRepository;
     }
 
+    // --- Create ---
+
     /**
      * Creates a new {@link Employee} in the database.
      *
@@ -80,6 +82,43 @@ public class EmployeeService {
         return savedEmployee;
     }
 
+    // --- Read ---
+
+    /**
+     * Finds matching {@link Employee Employees} by partial first and/or last name.
+     *
+     * <p>Empty optionals are treated as null values,
+     * meaning that name component is not used to filter results.
+     * 
+     * @param first optional first name fragment
+     * @param last optional last name fragment
+     * 
+     * @return matching employees
+     */
+    @Transactional(readOnly = true)
+    public List<Employee> findByPartialName(
+        final Optional<String> first, final Optional<String> last
+    ) {
+        return this.employeeRepository.findByPartialName(first.orElse(null), last.orElse(null));
+    }
+
+    /**
+     * Finds an {@link Employee} in the persistence layer by ID.
+     *
+     * @param employeeId the ID of the employee to find
+     * 
+     * @return the matching employee
+     *
+     * @throws EmployeeNotFoundException if the ID is not in the persistence layer
+     */
+    @Transactional(readOnly = true)
+    public Employee findById(final Integer employeeId) {
+        return this.employeeRepository.findById(employeeId)
+            .orElseThrow(() -> new EmployeeNotFoundException(employeeId));
+    }
+
+    // --- Update ---
+
     /**
      * Updates a given {@link Employee} in the persistence layer.
      *
@@ -118,23 +157,7 @@ public class EmployeeService {
         return savedEmployee;
     }
 
-    /**
-     * Finds matching {@link Employee Employees} by partial first and/or last name.
-     *
-     * <p>Empty optionals are treated as null values,
-     * meaning that name component is not used to filter results.
-     * 
-     * @param first optional first name fragment
-     * @param last optional last name fragment
-     * 
-     * @return matching employees
-     */
-    @Transactional(readOnly = true)
-    public List<Employee> findByPartialName(
-        final Optional<String> first, final Optional<String> last
-    ) {
-        return this.employeeRepository.findByPartialName(first.orElse(null), last.orElse(null));
-    }
+    // --- Delete ---
 
     /**
      * Deletes an {@link Employee} from the persistence layer by ID.
@@ -154,20 +177,5 @@ public class EmployeeService {
         
         this.employeeRepository.deleteById(employeeId);
         LOG.info("Deleted employee with id {}", employeeId);
-    }
-
-    /**
-     * Finds an {@link Employee} in the persistence layer by ID.
-     *
-     * @param employeeId the ID of the employee to find
-     * 
-     * @return the matching employee
-     *
-     * @throws EmployeeNotFoundException if the ID is not in the persistence layer
-     */
-    @Transactional(readOnly = true)
-    public Employee findById(final Integer employeeId) {
-        return this.employeeRepository.findById(employeeId)
-            .orElseThrow(() -> new EmployeeNotFoundException(employeeId));
     }
 }

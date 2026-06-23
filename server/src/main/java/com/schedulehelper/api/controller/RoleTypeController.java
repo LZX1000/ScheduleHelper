@@ -27,6 +27,16 @@ public class RoleTypeController {
         this.roleTypeService = roleTypeService;
     }
     
+    // --- Create ---
+
+    @PostMapping("")
+    // required = false for custom exception in service layer
+    public ResponseEntity<RoleType> createNew(@RequestBody(required = false) final RoleType roleType) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(this.roleTypeService.createNew(roleType));
+    }
+
+    // --- Read ---
+
     @GetMapping("/title/{title}")
     public ResponseEntity<RoleType> getByTitle(@PathVariable final String title) {
         return ResponseEntity.ok(this.roleTypeService.findByTitle(title));
@@ -42,21 +52,19 @@ public class RoleTypeController {
         return ResponseEntity.ok(this.roleTypeService.findById(roleTypeId));
     }
 
-    @PostMapping("")
-    // required = false for custom exception in service layer
-    public ResponseEntity<RoleType> createNew(@RequestBody(required = false) final RoleType roleType) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(this.roleTypeService.createNew(roleType));
-    }
-
-    @DeleteMapping("/{roleTypeId}")
-    public ResponseEntity<Void> deleteById(@PathVariable final Integer roleTypeId) {
-        this.roleTypeService.deleteById(roleTypeId);
-        return ResponseEntity.noContent().build();
-    }
+    // --- Update ---
 
     @PutMapping("")
     // required = false for custom exception in service layer
     public ResponseEntity<RoleType> updateById(@RequestBody(required = false) final RoleType roleType) {
         return ResponseEntity.ok(this.roleTypeService.updateById(roleType));
+    }
+
+    // --- Delete ---
+
+    @DeleteMapping("/{roleTypeId}")
+    public ResponseEntity<Void> deleteById(@PathVariable final Integer roleTypeId) {
+        this.roleTypeService.deleteById(roleTypeId);
+        return ResponseEntity.noContent().build();
     }
 }
