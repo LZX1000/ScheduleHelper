@@ -1,6 +1,7 @@
 package com.schedulehelper.api.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.schedulehelper.api.entity.RoleType;
 import com.schedulehelper.api.exception.IdGenerationFailedException;
+import com.schedulehelper.api.exception.MissingRoleTypeContentException;
 import com.schedulehelper.api.exception.RoleTypeNotFoundException;
 import com.schedulehelper.api.repository.RoleTypeRepository;
 
@@ -64,8 +66,8 @@ public class RoleTypeService {
      * @return matching role types
      */
     @Transactional(readOnly = true)
-    public List<RoleType> findByPartialTitle(final String title) {
-        return this.roleTypeRepository.findByPartialTitle(title);
+    public List<RoleType> findByPartialTitle(final Optional<String> title) {
+        return this.roleTypeRepository.findByPartialTitle(title.orElse(null));
     }
 
     /**
@@ -94,12 +96,19 @@ public class RoleTypeService {
      *
      * @return created role type
      * 
+     * @throws MissingRoleTypeContentException if the role type object is missing
      * @throws IllegalArgumentException if the role type already has an ID
      * @throws IdGenerationFailedException if the persistence layer fails to generate an ID
      */
     @Transactional
     public RoleType createNew(final RoleType roleType) {
+        if (roleType == null) {
+            LOG.warn("Attempted to create role_type with no content");
+            throw new MissingRoleTypeContentException();
+        }
+
         final Integer roleTypeId = roleType.getId();
+
         if (roleTypeId != null) {
             LOG.warn("Attempted to create role_type with predefined id {}", roleTypeId);
             throw new IllegalArgumentException("New RoleType must not have an ID.");
@@ -148,11 +157,17 @@ public class RoleTypeService {
      *
      * @return updated role type
      * 
+     * @throws MissingRoleTypeContentException if the role type object is missing
      * @throws IllegalArgumentException if the role type does not have an ID
      * @throws RoleTypeNotFoundException if the ID is not in the persistence layer
      */
     @Transactional
     public RoleType updateById(final RoleType roleType) {
+        if (roleType == null) {
+            LOG.warn("Attempted to create role_type with no content");
+            throw new MissingRoleTypeContentException();
+        }
+
         final Integer roleTypeId = roleType.getId();
 
         if (roleTypeId == null) {
