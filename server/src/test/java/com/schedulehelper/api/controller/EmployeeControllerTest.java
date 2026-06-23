@@ -42,7 +42,9 @@ public class EmployeeControllerTest {
     @MockitoBean
     private EmployeeService employeeService;
 
-    // --- createNew ---
+    // --- Create ---
+
+    // -- createNew --
 
     @Test
     public void testCreateNew_illegalArgument_exceptionHandlerIntercept() throws Exception {
@@ -89,7 +91,72 @@ public class EmployeeControllerTest {
             .andExpect(content().json(employeeJson));
     }
 
-    // --- updateById ---
+    // --- Read ---
+
+    // -- findByPartialName --
+
+    @Test
+    public void testFindByPartialName_nullSearch_success() throws Exception {
+        final List<Employee> expected = List.of(mock(Employee.class));
+        final String expectedJson = new ObjectMapper().writeValueAsString(expected);
+
+        when(this.employeeService.findByPartialName(Optional.empty(), Optional.empty()))
+            .thenReturn(expected);
+
+        mockMvc.perform(get("/api/employee/search")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(List.of(mock(Employee.class)))))
+            .andExpect(status().isOk())
+            .andExpect(content().json(expectedJson));
+    }
+
+    @Test
+    public void testFindByPartialName_success() throws Exception {
+        final List<Employee> expected = List.of(mock(Employee.class));
+        final String expectedJson = new ObjectMapper().writeValueAsString(expected);
+
+        when(this.employeeService.findByPartialName(Optional.of("John"), Optional.of("Smith")))
+            .thenReturn(expected);
+
+        mockMvc.perform(get("/api/employee/search")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(List.of(mock(Employee.class))))
+                .param("partialFirst", "John")
+                .param("partialLast", "Smith"))
+            .andExpect(status().isOk())
+            .andExpect(content().json(expectedJson));
+    }
+
+    // -- getById --
+
+    @Test
+    public void testGetById_employeeNotFound_exceptionHandlerIntercept() throws Exception {
+        final Integer testId = 0;
+
+        when(this.employeeService.findById(testId)).thenThrow(EmployeeNotFoundException.class);
+
+        mockMvc.perform(get("/api/employee/{employeeId}", testId))
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testGetById_success() throws Exception {
+        final Employee expected = mock(Employee.class);
+        final String expectedJson = new ObjectMapper().writeValueAsString(expected);
+        final Integer testId = 0;
+
+        when(this.employeeService.findById(testId)).thenReturn(expected);
+
+        mockMvc.perform(get("/api/employee/{employeeId}", testId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(mock(Employee.class))))
+            .andExpect(status().isOk())
+            .andExpect(content().json(expectedJson));
+    }
+
+    // --- Update ---
+
+    // -- updateById --
 
     @Test
     public void testUpdateById_missingEmployeeContent_exceptionHandlerIntercept() throws Exception {
@@ -136,41 +203,9 @@ public class EmployeeControllerTest {
             .andExpect(content().json(employeeJson));
     }
 
-    // --- findByPartialName ---
+    // --- Delete ---
 
-    @Test
-    public void testFindByPartialName_nullSearch_success() throws Exception {
-        final List<Employee> expected = List.of(mock(Employee.class));
-        final String expectedJson = new ObjectMapper().writeValueAsString(expected);
-
-        when(this.employeeService.findByPartialName(Optional.empty(), Optional.empty()))
-            .thenReturn(expected);
-
-        mockMvc.perform(get("/api/employee/search")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(List.of(mock(Employee.class)))))
-            .andExpect(status().isOk())
-            .andExpect(content().json(expectedJson));
-    }
-
-    @Test
-    public void testFindByPartialName_success() throws Exception {
-        final List<Employee> expected = List.of(mock(Employee.class));
-        final String expectedJson = new ObjectMapper().writeValueAsString(expected);
-
-        when(this.employeeService.findByPartialName(Optional.of("John"), Optional.of("Smith")))
-            .thenReturn(expected);
-
-        mockMvc.perform(get("/api/employee/search")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(List.of(mock(Employee.class))))
-                .param("partialFirst", "John")
-                .param("partialLast", "Smith"))
-            .andExpect(status().isOk())
-            .andExpect(content().json(expectedJson));
-    }
-
-    // --- deleteById ---
+    // -- deleteById --
 
     @Test
     public void testDeleteById_employeeNotFound_exceptionHandlerIntercept() throws Exception {
@@ -190,32 +225,5 @@ public class EmployeeControllerTest {
 
         mockMvc.perform(delete("/api/employee/{employeeId}", test_id))
             .andExpect(status().isNoContent());
-    }
-
-    // --- getById ---
-
-    @Test
-    public void testGetById_employeeNotFound_exceptionHandlerIntercept() throws Exception {
-        final Integer testId = 0;
-
-        when(this.employeeService.findById(testId)).thenThrow(EmployeeNotFoundException.class);
-
-        mockMvc.perform(get("/api/employee/{employeeId}", testId))
-            .andExpect(status().isNotFound());
-    }
-
-    @Test
-    public void testGetById_success() throws Exception {
-        final Employee expected = mock(Employee.class);
-        final String expectedJson = new ObjectMapper().writeValueAsString(expected);
-        final Integer testId = 0;
-
-        when(this.employeeService.findById(testId)).thenReturn(expected);
-
-        mockMvc.perform(get("/api/employee/{employeeId}", testId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(mock(Employee.class))))
-            .andExpect(status().isOk())
-            .andExpect(content().json(expectedJson));
     }
 }
