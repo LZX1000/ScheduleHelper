@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.schedulehelper.api.entity.ShiftRole;
 import com.schedulehelper.api.exception.IdGenerationFailedException;
+import com.schedulehelper.api.exception.MissingShiftRoleContentException;
 import com.schedulehelper.api.exception.ShiftRoleNotFoundException;
 import com.schedulehelper.api.repository.ShiftRoleRepository;
 
@@ -48,12 +49,19 @@ public class ShiftRoleService {
      *
      * @return created shift role
      * 
+     * @throws MissingShiftRoleContentException if the shift role object is missing
      * @throws IllegalArgumentException if the shift role already has an ID
      * @throws IdGenerationFailedException if the persistence layer fails to generate an ID
      */
     @Transactional
     public ShiftRole createNew(final ShiftRole shiftRole) {
+        if (shiftRole == null) {
+            LOG.warn("Attempted to create shift_role with no content");
+            throw new MissingShiftRoleContentException();
+        }
+
         final Integer shiftRoleId = shiftRole.getId();
+
         if (shiftRoleId != null) {
             LOG.warn("Attempted to create shift_role with predefined id {}", shiftRoleId);
             throw new IllegalArgumentException("New ShiftRole must not have an ID.");
@@ -101,11 +109,17 @@ public class ShiftRoleService {
      *
      * @return updated shift role
      * 
+     * @throws MissingShiftRoleContentException if the shift role object is missing
      * @throws IllegalArgumentException if the shift role does not have an ID
      * @throws ShiftRoleNotFoundException if the ID is not in the persistence layer
      */
     @Transactional
     public ShiftRole updateById(final ShiftRole shiftRole) {
+        if (shiftRole == null) {
+            LOG.warn("Attempted to create shift_role with no content");
+            throw new MissingShiftRoleContentException();
+        }
+
         final Integer shiftRoleId = shiftRole.getId();
 
         if (shiftRoleId == null) {
