@@ -49,7 +49,7 @@ public class EmployeeControllerTest {
         when(this.employeeService.createNew(any(Employee.class)))
             .thenThrow(new IllegalArgumentException("New employee must not have an ID."));
 
-        mockMvc.perform(post("/api/employees")
+        mockMvc.perform(post("/api/employee")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(mock(Employee.class))))
             .andExpect(status().isBadRequest());
@@ -60,7 +60,7 @@ public class EmployeeControllerTest {
         when (this.employeeService.createNew(null))
             .thenThrow(new MissingEmployeeContent());
 
-        mockMvc.perform(post("/api/employees"))
+        mockMvc.perform(post("/api/employee"))
             .andExpect(status().isBadRequest());
     }
     
@@ -69,7 +69,7 @@ public class EmployeeControllerTest {
         when(this.employeeService.createNew(any(Employee.class)))
             .thenThrow(new IdGenerationFailedException("Id generation failed for new employee."));
 
-        mockMvc.perform(post("/api/employees")
+        mockMvc.perform(post("/api/employee")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(mock(Employee.class))))
             .andExpect(status().isInternalServerError());
@@ -82,7 +82,7 @@ public class EmployeeControllerTest {
 
         when(this.employeeService.createNew(any(Employee.class))).thenReturn(employee);
 
-        mockMvc.perform(post("/api/employees")
+        mockMvc.perform(post("/api/employee")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(employee)))
             .andExpect(status().isCreated())
@@ -93,10 +93,10 @@ public class EmployeeControllerTest {
 
     @Test
     public void testUpdateById_missingEmployeeContent_exceptionHandlerIntercept() throws Exception {
-        when (this.employeeService.createNew(null))
+        when(this.employeeService.updateById(null))
             .thenThrow(new MissingEmployeeContent());
 
-        mockMvc.perform(put("/api/employees"))
+        mockMvc.perform(put("/api/employee"))
             .andExpect(status().isBadRequest());
     }
 
@@ -105,7 +105,7 @@ public class EmployeeControllerTest {
         when(this.employeeService.updateById(any(Employee.class)))
             .thenThrow(new IllegalArgumentException("Employee must have an ID to be updated."));
 
-        mockMvc.perform(put("/api/employees")
+        mockMvc.perform(put("/api/employee")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(mock(Employee.class))))
             .andExpect(status().isBadRequest());
@@ -116,7 +116,7 @@ public class EmployeeControllerTest {
         when(this.employeeService.updateById(any(Employee.class)))
             .thenThrow(new EmployeeNotFoundException(0));
 
-        mockMvc.perform(put("/api/employees")
+        mockMvc.perform(put("/api/employee")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(mock(Employee.class))))
             .andExpect(status().isNotFound());
@@ -129,7 +129,7 @@ public class EmployeeControllerTest {
 
         when(this.employeeService.updateById(any(Employee.class))).thenReturn(employee);
 
-        mockMvc.perform(put("/api/employees")
+        mockMvc.perform(put("/api/employee")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(employee)))
             .andExpect(status().isOk())
@@ -139,6 +139,21 @@ public class EmployeeControllerTest {
     // --- findByPartialName ---
 
     @Test
+    public void testFindByPartialName_nullSearch_success() throws Exception {
+        final List<Employee> expected = List.of(mock(Employee.class));
+        final String expectedJson = new ObjectMapper().writeValueAsString(expected);
+
+        when(this.employeeService.findByPartialName(Optional.empty(), Optional.empty()))
+            .thenReturn(expected);
+
+        mockMvc.perform(get("/api/employee/search")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(List.of(mock(Employee.class)))))
+            .andExpect(status().isOk())
+            .andExpect(content().json(expectedJson));
+    }
+
+    @Test
     public void testFindByPartialName_success() throws Exception {
         final List<Employee> expected = List.of(mock(Employee.class));
         final String expectedJson = new ObjectMapper().writeValueAsString(expected);
@@ -146,7 +161,7 @@ public class EmployeeControllerTest {
         when(this.employeeService.findByPartialName(Optional.of("John"), Optional.of("Smith")))
             .thenReturn(expected);
 
-        mockMvc.perform(get("/api/employees/search")
+        mockMvc.perform(get("/api/employee/search")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(List.of(mock(Employee.class))))
                 .param("partialFirst", "John")
@@ -163,7 +178,7 @@ public class EmployeeControllerTest {
 
         doThrow(new EmployeeNotFoundException(0)).when(this.employeeService).deleteById(any(Integer.class));
 
-        mockMvc.perform(delete("/api/employees/{employeeId}", test_id))
+        mockMvc.perform(delete("/api/employee/{employeeId}", test_id))
             .andExpect(status().isNotFound());
     }
 
@@ -173,7 +188,7 @@ public class EmployeeControllerTest {
 
         doNothing().when(this.employeeService).deleteById(test_id);
 
-        mockMvc.perform(delete("/api/employees/{employeeId}", test_id))
+        mockMvc.perform(delete("/api/employee/{employeeId}", test_id))
             .andExpect(status().isNoContent());
     }
 
@@ -185,7 +200,7 @@ public class EmployeeControllerTest {
 
         when(this.employeeService.findById(testId)).thenThrow(EmployeeNotFoundException.class);
 
-        mockMvc.perform(get("/api/employees/{employeeId}", testId))
+        mockMvc.perform(get("/api/employee/{employeeId}", testId))
             .andExpect(status().isNotFound());
     }
 
@@ -197,7 +212,7 @@ public class EmployeeControllerTest {
 
         when(this.employeeService.findById(testId)).thenReturn(expected);
 
-        mockMvc.perform(get("/api/employees/{employeeId}", testId)
+        mockMvc.perform(get("/api/employee/{employeeId}", testId)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(mock(Employee.class))))
             .andExpect(status().isOk())
