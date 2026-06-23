@@ -19,7 +19,7 @@ import com.schedulehelper.api.entity.Employee;
 import com.schedulehelper.api.service.EmployeeService;
 
 @RestController
-@RequestMapping("/api/employees")
+@RequestMapping("/api/employee")
 public class EmployeeController {
     final private EmployeeService employeeService;
 
@@ -28,12 +28,14 @@ public class EmployeeController {
     }
 
     @PostMapping("")
+    // required = false for custom exception in service layer
     public ResponseEntity<Employee> createNew(@RequestBody(required = false) Employee employee) {
         return ResponseEntity.status(HttpStatus.CREATED).body(this.employeeService.createNew(employee));
     }
 
     @PutMapping("")
-    public ResponseEntity<Employee> updateById(@RequestBody final Employee employee) {
+    // required = false for custom exception in service layer
+    public ResponseEntity<Employee> updateById(@RequestBody(required = false) final Employee employee) {
         return ResponseEntity.status(HttpStatus.OK).body(this.employeeService.updateById(employee));
     }
 
