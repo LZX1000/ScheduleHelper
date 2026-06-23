@@ -53,7 +53,7 @@ public class RoleTypeServiceTest {
         final List<RoleType> expected = List.of();
         when(this.roleTypeRepository.findByPartialTitle("test")).thenReturn(expected);
 
-        final List<RoleType> result = this.roleTypeService.findByPartialTitle("test");
+        final List<RoleType> result = this.roleTypeService.findByPartialTitle(Optional.of("test"));
         assertEquals(result, expected);
     }
 
@@ -62,7 +62,7 @@ public class RoleTypeServiceTest {
         final List<RoleType> expected = List.of(mock(RoleType.class), mock(RoleType.class));
         when(this.roleTypeRepository.findByPartialTitle("test")).thenReturn(expected);
 
-        final List<RoleType> result = this.roleTypeService.findByPartialTitle("test");
+        final List<RoleType> result = this.roleTypeService.findByPartialTitle(Optional.of("test"));
         assertEquals(expected, result);
     }
 
@@ -71,7 +71,7 @@ public class RoleTypeServiceTest {
         final List<RoleType> expected = List.of(mock(RoleType.class));
         when(this.roleTypeRepository.findByPartialTitle("test")).thenReturn(expected);
 
-        final List<RoleType> result = this.roleTypeService.findByPartialTitle("test");
+        final List<RoleType> result = this.roleTypeService.findByPartialTitle(Optional.of("test"));
         assertEquals(expected, result);
     }
 
