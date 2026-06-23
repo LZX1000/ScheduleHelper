@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.schedulehelper.api.entity.Employee;
 import com.schedulehelper.api.exception.EmployeeNotFoundException;
 import com.schedulehelper.api.exception.IdGenerationFailedException;
-import com.schedulehelper.api.exception.MissingEmployeeContent;
+import com.schedulehelper.api.exception.MissingEmployeeContentException;
 import com.schedulehelper.api.repository.EmployeeRepository;
 
 /**
@@ -50,7 +50,7 @@ public class EmployeeService {
      *
      * @return created employee
      * 
-     * @throws MissingEmployeeContent if the employee object is missing
+     * @throws MissingEmployeeContentException if the employee object is missing
      * @throws IllegalArgumentException if the employee already has an ID
      * @throws IdGenerationFailedException if the persistence layer fails to generate an ID
      */
@@ -58,7 +58,7 @@ public class EmployeeService {
     public Employee createNew(final Employee employee) {
         if (employee == null) {
             LOG.warn("Attempted to create employee with no content");
-            throw new MissingEmployeeContent();
+            throw new MissingEmployeeContentException();
         }
 
         final Integer employeeId = employee.getId();
@@ -91,7 +91,7 @@ public class EmployeeService {
      * 
      * @return updated employee
      * 
-     * @throws MissingEmployeeContent if the employee object is missing
+     * @throws MissingEmployeeContentException if the employee object is missing
      * @throws IllegalArgumentException if the employee does not have an ID
      * @throws EmployeeNotFoundException if the ID is not in the persistence layer
      */
@@ -99,7 +99,7 @@ public class EmployeeService {
     public Employee updateById(final Employee employee) {
         if (employee == null) {
             LOG.warn("Attempted to create employee with no content");
-            throw new MissingEmployeeContent();
+            throw new MissingEmployeeContentException();
         }
     
         final Integer employeeId = employee.getId();

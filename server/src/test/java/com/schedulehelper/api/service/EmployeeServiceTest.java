@@ -18,7 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.schedulehelper.api.entity.Employee;
 import com.schedulehelper.api.exception.EmployeeNotFoundException;
 import com.schedulehelper.api.exception.IdGenerationFailedException;
-import com.schedulehelper.api.exception.MissingEmployeeContent;
+import com.schedulehelper.api.exception.MissingEmployeeContentException;
 import com.schedulehelper.api.repository.EmployeeRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -41,7 +41,7 @@ public class EmployeeServiceTest {
 
     @Test
     public void testCreateNew_missingEmployeeContent_throwsException() {
-        assertThrows(MissingEmployeeContent.class, () -> this.employeeService.createNew(null));
+        assertThrows(MissingEmployeeContentException.class, () -> this.employeeService.createNew(null));
     }
 
     @Test
@@ -78,7 +78,7 @@ public class EmployeeServiceTest {
 
     @Test
     public void testUpdateById_missingEmployeeContent_throwsException() {
-        assertThrows(MissingEmployeeContent.class, () -> this.employeeService.updateById(null));
+        assertThrows(MissingEmployeeContentException.class, () -> this.employeeService.updateById(null));
     }
 
     @Test

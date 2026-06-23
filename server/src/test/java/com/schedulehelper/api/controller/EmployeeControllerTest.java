@@ -26,7 +26,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.schedulehelper.api.entity.Employee;
 import com.schedulehelper.api.exception.EmployeeNotFoundException;
 import com.schedulehelper.api.exception.IdGenerationFailedException;
-import com.schedulehelper.api.exception.MissingEmployeeContent;
+import com.schedulehelper.api.exception.MissingEmployeeContentException;
 import com.schedulehelper.api.service.EmployeeService;
 
 import tools.jackson.databind.ObjectMapper;
@@ -58,7 +58,7 @@ public class EmployeeControllerTest {
     @Test
     public void testCreateNew_missingEmployeeContent_exceptionHandlerIntercept() throws Exception {
         when (this.employeeService.createNew(null))
-            .thenThrow(new MissingEmployeeContent());
+            .thenThrow(new MissingEmployeeContentException());
 
         mockMvc.perform(post("/api/employee"))
             .andExpect(status().isBadRequest());
@@ -94,7 +94,7 @@ public class EmployeeControllerTest {
     @Test
     public void testUpdateById_missingEmployeeContent_exceptionHandlerIntercept() throws Exception {
         when(this.employeeService.updateById(null))
-            .thenThrow(new MissingEmployeeContent());
+            .thenThrow(new MissingEmployeeContentException());
 
         mockMvc.perform(put("/api/employee"))
             .andExpect(status().isBadRequest());
