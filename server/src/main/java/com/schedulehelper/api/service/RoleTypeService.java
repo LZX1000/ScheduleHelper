@@ -98,7 +98,7 @@ public class RoleTypeService {
         return this.roleTypeRepository.findByTitle(title).orElseThrow(() -> {
             LOG.warn("Attempted to find non-existent RoleType with title {}", title);
             throw new RoleTypeNotFoundException(
-                String.format("RoleType with title {} not found", title)
+                String.format("RoleType with title %s not found", title)
             );
         });
     }
