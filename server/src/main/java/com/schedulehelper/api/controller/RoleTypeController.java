@@ -21,7 +21,7 @@ import com.schedulehelper.api.service.RoleTypeService;
 @RestController
 @RequestMapping("/api/role-type")
 public class RoleTypeController {
-    final private RoleTypeService roleTypeService;
+    private final RoleTypeService roleTypeService;
 
     RoleTypeController(final RoleTypeService roleTypeService) {
         this.roleTypeService = roleTypeService;

@@ -50,7 +50,7 @@ public class RoleTypeControllerTest {
     @Test
     public void testCreateNew_illegalArgument_exceptionHandlerIntercept() throws Exception {
         when(this.roleTypeService.createNew(any(RoleType.class)))
-            .thenThrow(new IllegalArgumentException("New  must not have an ID."));
+            .thenThrow(new IllegalArgumentException("New shift role must not have an ID."));
 
         mockMvc.perform(post("/api/role-type")
                 .contentType(MediaType.APPLICATION_JSON)

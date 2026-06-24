@@ -33,20 +33,22 @@ public class ShiftServiceTest {
 
     @Test
     public void testFindByStartTimeBetween_noResults() {
-        final OffsetDateTime start = mock(OffsetDateTime.class);
-        final OffsetDateTime end   = mock(OffsetDateTime.class);
+        final Optional<OffsetDateTime> start = Optional.of(mock(OffsetDateTime.class));
+        final Optional<OffsetDateTime> end   = Optional.of(mock(OffsetDateTime.class));
         final List<Shift> expected = List.of();
-        when(this.shiftRepository.findByStartTimeBetween(start, end)).thenReturn(expected);
+
+        when(this.shiftRepository.findByStartTimeBetween(start.get(), end.get())).thenReturn(expected);
 
         assertEquals(expected, this.shiftService.findByStartTimeBetween(start, end));
     }
 
     @Test
     public void testFindByStartTimeBetween() {
-        final OffsetDateTime start = mock(OffsetDateTime.class);
-        final OffsetDateTime end   = mock(OffsetDateTime.class);
+        final Optional<OffsetDateTime> start = Optional.of(mock(OffsetDateTime.class));
+        final Optional<OffsetDateTime> end   = Optional.of(mock(OffsetDateTime.class));
         final List<Shift> expected = List.of(mock(Shift.class), mock(Shift.class), mock(Shift.class));
-        when(this.shiftRepository.findByStartTimeBetween(start, end)).thenReturn(expected);
+
+        when(this.shiftRepository.findByStartTimeBetween(start.get(), end.get())).thenReturn(expected);
 
         assertEquals(expected, this.shiftService.findByStartTimeBetween(start, end));
     }
@@ -63,6 +65,7 @@ public class ShiftServiceTest {
     @Test
     public void testFindById() {
         final Shift shiftRole = mock(Shift.class);
+
         when(this.shiftRepository.findById(1)).thenReturn(Optional.of(shiftRole));
 
         final Shift result = this.shiftService.findById(1);
@@ -75,6 +78,7 @@ public class ShiftServiceTest {
     @Test
     public void testCreateNew_withId_throwsException() {
         final Shift shift = mock(Shift.class);
+
         when(shift.getId()).thenReturn(1);
 
         assertThrows(IllegalArgumentException.class, () -> this.shiftService.createNew(shift));
@@ -83,8 +87,9 @@ public class ShiftServiceTest {
     @Test
     public void testCreateNew_idGenerationFailed_throwsException() {
         final Shift shift = mock(Shift.class);
-        when(shift.getId()).thenReturn(null);
         final Shift savedshift = mock(Shift.class);
+
+        when(shift.getId()).thenReturn(null);
         when(savedshift.getId()).thenReturn(null);
         when(this.shiftRepository.save(shift)).thenReturn(savedshift);
 
@@ -94,8 +99,9 @@ public class ShiftServiceTest {
     @Test
     public void testCreateNew() {
         final Shift shift = mock(Shift.class);
-        when(shift.getId()).thenReturn(null);
         final Shift savedshift = mock(Shift.class);
+
+        when(shift.getId()).thenReturn(null);
         when(savedshift.getId()).thenReturn(1);
         when(this.shiftRepository.save(shift)).thenReturn(savedshift);
 
@@ -123,6 +129,7 @@ public class ShiftServiceTest {
     @Test
     public void testUpdateById_nullId_throwsException() {
         final Shift shift = mock(Shift.class);
+
         when(shift.getId()).thenReturn(null);
 
         assertThrows(IllegalArgumentException.class, () -> this.shiftService.updateById(shift));
@@ -131,6 +138,7 @@ public class ShiftServiceTest {
     @Test
     public void testUpdateById_doesNotExist_throwsException() {
         final Shift shift = mock(Shift.class);
+
         when(shift.getId()).thenReturn(1);
         when(this.shiftRepository.existsById(1)).thenReturn(false);
 
@@ -140,6 +148,7 @@ public class ShiftServiceTest {
     @Test
     public void testUpdateById() {
         final Shift shift = mock(Shift.class);
+
         when(shift.getId()).thenReturn(1);
         when(this.shiftRepository.existsById(1)).thenReturn(true);
         when(this.shiftRepository.save(shift)).thenReturn(shift);

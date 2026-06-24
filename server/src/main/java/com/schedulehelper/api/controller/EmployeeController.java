@@ -21,7 +21,7 @@ import com.schedulehelper.api.service.EmployeeService;
 @RestController
 @RequestMapping("/api/employee")
 public class EmployeeController {
-    final private EmployeeService employeeService;
+    private final EmployeeService employeeService;
 
     EmployeeController(final EmployeeService employeeService) {
         this.employeeService = employeeService;

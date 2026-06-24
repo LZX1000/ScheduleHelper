@@ -2,6 +2,7 @@ package com.schedulehelper.api.service;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.schedulehelper.api.entity.Shift;
 import com.schedulehelper.api.exception.IdGenerationFailedException;
+import com.schedulehelper.api.exception.MissingShiftContentException;
 import com.schedulehelper.api.exception.ShiftNotFoundException;
 import com.schedulehelper.api.repository.ShiftRepository;
 
@@ -51,12 +53,19 @@ public class ShiftService {
      * 
      * @return created shift
      *
+     * @throws MissingShiftContentException if the shift object is missing
      * @throws IllegalArgumentException if the shift already has an ID
      * @throws IdGenerationFailedException if the persistence layer fails to generate an ID
      */
     @Transactional
     public Shift createNew(final Shift shift) {
+        if (shift == null) {
+            LOG.warn("Attempted to create shift with no content");
+            throw new MissingShiftContentException();
+        }
+
         final Integer shiftId = shift.getId();
+
         if (shiftId != null) {
             LOG.warn("Attempted to create shift with predefined id {}", shiftId);
             throw new IllegalArgumentException("New Shift must not have an ID.");
@@ -86,9 +95,12 @@ public class ShiftService {
      */
     @Transactional(readOnly = true)
     public List<Shift> findByStartTimeBetween(
-        final OffsetDateTime start, final OffsetDateTime end
+        final Optional<OffsetDateTime> start, final Optional<OffsetDateTime> end
     ) {
-        return this.shiftRepository.findByStartTimeBetween(start, end);
+        return this.shiftRepository.findByStartTimeBetween(
+            start.orElse(OffsetDateTime.MIN),
+            end.orElse(OffsetDateTime.MAX)
+        );
     }
 
     /**
@@ -119,11 +131,17 @@ public class ShiftService {
      * 
      * @return updated shift
      *
+     * @throws MissingShiftContentException if the shift object is missing
      * @throws IllegalArgumentException if the shift does not have an ID
      * @throws ShiftNotFoundException if the ID is not in the persistence layer
      */
     @Transactional
     public Shift updateById(final Shift shift) {
+        if (shift == null) {
+            LOG.warn("Attempted to create shift with no content");
+            throw new MissingShiftContentException();
+        }
+
         final Integer shiftId = shift.getId();
         
         if (shiftId == null) {
@@ -140,7 +158,7 @@ public class ShiftService {
         return updatedShift;
     }
 
-    // --- Delete
+    // --- Delete ---
 
     /**
      * Deletes a {@link Shift} from the persistence layer by ID.
