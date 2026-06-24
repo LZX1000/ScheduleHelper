@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Unit tests for {@link Shift}.
  */
-public class ShiftTest {
+class ShiftTest {
     private final List<Shift> shifts = new ArrayList<>();
 
     @BeforeEach

@@ -16,11 +16,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.schedulehelper.api.entity.ShiftRole;
 import com.schedulehelper.api.exception.IdGenerationFailedException;
+import com.schedulehelper.api.exception.MissingShiftRoleContentException;
 import com.schedulehelper.api.exception.ShiftRoleNotFoundException;
 import com.schedulehelper.api.repository.ShiftRoleRepository;
 
 @ExtendWith(MockitoExtension.class)
-public class ShiftRoleServiceTest {
+class ShiftRoleServiceTest {
     @Mock
     private ShiftRoleRepository shiftRoleRepository;
 
@@ -30,14 +31,14 @@ public class ShiftRoleServiceTest {
     // --- findById ---
 
     @Test
-    public void testFindById_notFound() {
+    void testFindById_notFound() {
         when(this.shiftRoleRepository.findById(99)).thenReturn(Optional.empty());
 
         assertThrows(ShiftRoleNotFoundException.class, () -> this.shiftRoleService.findById(99));
     }
 
     @Test
-    public void testFindById() {
+    void testFindById() {
         final ShiftRole shiftRole = mock(ShiftRole.class);
         when(this.shiftRoleRepository.findById(1)).thenReturn(Optional.of(shiftRole));
 
@@ -49,7 +50,7 @@ public class ShiftRoleServiceTest {
     // --- createNew ---
 
     @Test
-    public void testCreateNew_withId_throwsException() {
+    void testCreateNew_withId_throwsException() {
         final ShiftRole shiftRole = mock(ShiftRole.class);
         when(shiftRole.getId()).thenReturn(1);
 
@@ -57,7 +58,12 @@ public class ShiftRoleServiceTest {
     }
 
     @Test
-    public void testCreateNew_idGenerationFailed_throwsException() {
+    void testCreateNew_missingShiftRoleContent_throwsException() {
+        assertThrows(MissingShiftRoleContentException.class, () -> this.shiftRoleService.createNew(null));
+    }
+
+    @Test
+    void testCreateNew_idGenerationFailed_throwsException() {
         final ShiftRole shiftRole = mock(ShiftRole.class);
         when(shiftRole.getId()).thenReturn(null);
         final ShiftRole savedShiftRole = mock(ShiftRole.class);
@@ -68,27 +74,27 @@ public class ShiftRoleServiceTest {
     }
     
     @Test
-    public void testCreateNew() {
+    void testCreateNew() {
         final ShiftRole shiftRole = mock(ShiftRole.class);
         when(shiftRole.getId()).thenReturn(null);
         final ShiftRole savedShiftRole = mock(ShiftRole.class);
         when(savedShiftRole.getId()).thenReturn(1);
         when(this.shiftRoleRepository.save(shiftRole)).thenReturn(savedShiftRole);
 
-        assertDoesNotThrow(() -> this.shiftRoleService.createNew(shiftRole));
+        assertEquals(savedShiftRole, this.shiftRoleService.createNew(shiftRole));
     }
 
     // --- deleteById ---
 
     @Test
-    public void testDeleteById_doesNotExist_throwsException() {
+    void testDeleteById_doesNotExist_throwsException() {
         when(this.shiftRoleRepository.existsById(1)).thenReturn(false);
 
         assertThrows(ShiftRoleNotFoundException.class, () -> this.shiftRoleService.deleteById(1));
     }
 
     @Test
-    public void testDeleteById() {
+    void testDeleteById() {
         when(this.shiftRoleRepository.existsById(1)).thenReturn(true);
 
         assertDoesNotThrow(() -> this.shiftRoleService.deleteById(1));
@@ -97,7 +103,7 @@ public class ShiftRoleServiceTest {
     // --- updateById ---
 
     @Test
-    public void testUpdateById_nullId_throwsException() {
+    void testUpdateById_nullId_throwsException() {
         final ShiftRole shiftRole = mock(ShiftRole.class);
         when(shiftRole.getId()).thenReturn(null);
 
@@ -105,7 +111,12 @@ public class ShiftRoleServiceTest {
     }
 
     @Test
-    public void testUpdateById_doesNotExist_throwsException() {
+    void testUpdateById_missingShiftRoleContent_throwsException() {
+        assertThrows(MissingShiftRoleContentException.class, () -> this.shiftRoleService.updateById(null));
+    }
+
+    @Test
+    void testUpdateById_doesNotExist_throwsException() {
         final ShiftRole shiftRole = mock(ShiftRole.class);
         when(shiftRole.getId()).thenReturn(1);
         when(this.shiftRoleRepository.existsById(1)).thenReturn(false);
@@ -114,11 +125,12 @@ public class ShiftRoleServiceTest {
     }
 
     @Test
-    public void testUpdateById() {
+    void testUpdateById() {
         final ShiftRole shiftRole = mock(ShiftRole.class);
         when(shiftRole.getId()).thenReturn(1);
         when(this.shiftRoleRepository.existsById(1)).thenReturn(true);
+        when(this.shiftRoleRepository.save(shiftRole)).thenReturn(shiftRole);
 
-        assertDoesNotThrow(() -> this.shiftRoleService.updateById(shiftRole));
+        assertEquals(shiftRole, this.shiftRoleService.updateById(shiftRole));
     }
 }

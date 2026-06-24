@@ -2,6 +2,7 @@ package com.schedulehelper.api.service;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.schedulehelper.api.entity.Shift;
 import com.schedulehelper.api.exception.IdGenerationFailedException;
+import com.schedulehelper.api.exception.MissingShiftContentException;
 import com.schedulehelper.api.exception.ShiftNotFoundException;
 import com.schedulehelper.api.repository.ShiftRepository;
 
@@ -38,6 +40,51 @@ public class ShiftService {
         this.shiftRepository = shiftRepository;
     }
 
+    // --- Create ---
+
+    /**
+     * Creates a new {@link Shif} in the database.
+     *
+     * <p>This method requires that the provided shift has no predefined ID.
+     * If an ID is present, the creation attempt is rejected. After creating
+     * the shift, the method verifies that an ID was successfully generated.
+     *
+     * @param shift the shift entity to create; must not have an ID
+     * 
+     * @return created shift
+     *
+     * @throws MissingShiftContentException if the shift object is missing
+     * @throws IllegalArgumentException if the shift already has an ID
+     * @throws IdGenerationFailedException if the persistence layer fails to generate an ID
+     */
+    @Transactional
+    public Shift createNew(final Shift shift) {
+        if (shift == null) {
+            LOG.warn("Attempted to create shift with no content");
+            throw new MissingShiftContentException();
+        }
+
+        final Integer shiftId = shift.getId();
+
+        if (shiftId != null) {
+            LOG.warn("Attempted to create shift with predefined id {}", shiftId);
+            throw new IllegalArgumentException("New Shift must not have an ID.");
+        }
+
+        final Shift savedShift = this.shiftRepository.save(shift);
+        final Integer savedShiftId = savedShift.getId();
+
+        if (savedShiftId == null) {
+            LOG.warn("Id generation failed for new shift.");
+            throw new IdGenerationFailedException("Shift");
+        }
+
+        LOG.info("Created new shift with id {}", savedShiftId);
+        return savedShift;
+    }
+
+    // --- Read ---
+
     /**
      * Finds matching {@link Shift Shifts} by a start time range.
      * 
@@ -48,9 +95,12 @@ public class ShiftService {
      */
     @Transactional(readOnly = true)
     public List<Shift> findByStartTimeBetween(
-        final OffsetDateTime start, final OffsetDateTime end
+        final Optional<OffsetDateTime> start, final Optional<OffsetDateTime> end
     ) {
-        return this.shiftRepository.findByStartTimeBetween(start, end);
+        return this.shiftRepository.findByStartTimeBetween(
+            start.orElse(OffsetDateTime.MIN),
+            end.orElse(OffsetDateTime.MAX)
+        );
     }
 
     /**
@@ -68,35 +118,47 @@ public class ShiftService {
             .orElseThrow(() -> new ShiftNotFoundException(shiftId));
     }
 
+    // --- Update ---
+
     /**
-     * Creates a new {@link Shif} in the database.
+     * Updates a given {@link Shift} in the persistence layer.
      *
-     * <p>This method requires that the provided shift has no predefined ID.
-     * If an ID is present, the creation attempt is rejected. After creating
-     * the shift, the method verifies that an ID was successfully generated.
+     * <p>This method requires that the provided shift has an ID.
+     * If the ID is missing or does not correspond to an existing shift,
+     * the update attempt is rejected.
      *
-     * @param shift the shift entity to create; must not have an ID
+     * @param shift the updated shift entity; must have an ID
+     * 
+     * @return updated shift
      *
-     * @throws IllegalArgumentException if the shift already has an ID
-     * @throws IdGenerationFailedException if the persistence layer fails to generate an ID
+     * @throws MissingShiftContentException if the shift object is missing
+     * @throws IllegalArgumentException if the shift does not have an ID
+     * @throws ShiftNotFoundException if the ID is not in the persistence layer
      */
     @Transactional
-    public void createNew(final Shift shift) {
+    public Shift updateById(final Shift shift) {
+        if (shift == null) {
+            LOG.warn("Attempted to create shift with no content");
+            throw new MissingShiftContentException();
+        }
+
         final Integer shiftId = shift.getId();
-        if (shiftId != null) {
-            LOG.warn("Attempted to create shift with predefined id {}", shiftId);
-            throw new IllegalArgumentException("New Shift must not have an ID.");
+        
+        if (shiftId == null) {
+            LOG.warn("Attempted to update shift with null id");
+            throw new IllegalArgumentException("Shift must have an ID to be updated.");
+        }
+        if (!this.shiftRepository.existsById(shiftId)) {
+            LOG.warn("Attempted to update non-existent shift with id {}", shiftId);
+            throw new ShiftNotFoundException(shiftId);
         }
 
-        final Integer savedShiftId = this.shiftRepository.save(shift).getId();
-
-        if (savedShiftId == null) {
-            LOG.warn("Id generation failed for new shift.");
-            throw new IdGenerationFailedException("Shift");
-        }
-
-        LOG.info("Created new shift with id {}", savedShiftId);
+        final Shift updatedShift = this.shiftRepository.save(shift);
+        LOG.info("Updated shift with id {}", shiftId);
+        return updatedShift;
     }
+
+    // --- Delete ---
 
     /**
      * Deletes a {@link Shift} from the persistence layer by ID.
@@ -116,34 +178,5 @@ public class ShiftService {
         
         this.shiftRepository.deleteById(shiftId);
         LOG.info("Deleted shift with id {}", shiftId);
-    }
-
-    /**
-     * Updates a given {@link Shift} in the persistence layer.
-     *
-     * <p>This method requires that the provided shift has an ID.
-     * If the ID is missing or does not correspond to an existing shift,
-     * the update attempt is rejected.
-     *
-     * @param shift the updated shift entity; must have an ID
-     *
-     * @throws IllegalArgumentException if the shift does not have an ID
-     * @throws ShiftNotFoundException if the ID is not in the persistence layer
-     */
-    @Transactional
-    public void updateById(final Shift shift) {
-        final Integer shiftId = shift.getId();
-        
-        if (shiftId == null) {
-            LOG.warn("Attempted to update shift with null id");
-            throw new IllegalArgumentException("Shift must have an ID to be updated.");
-        }
-        if (!this.shiftRepository.existsById(shiftId)) {
-            LOG.warn("Attempted to update non-existent shift with id {}", shiftId);
-            throw new ShiftNotFoundException(shiftId);
-        }
-
-        this.shiftRepository.save(shift);
-        LOG.info("Updated shift with id {}", shiftId);
     }
 }

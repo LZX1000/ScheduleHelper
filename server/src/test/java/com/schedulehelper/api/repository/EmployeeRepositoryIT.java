@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @Tag("repository")
 @DataJpaTest
-public class EmployeeRepositoryIT {
+class EmployeeRepositoryIT {
     @Autowired
     private EmployeeRepository employeeRepository;
 

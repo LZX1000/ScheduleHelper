@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.schedulehelper</groupId>
 	<artifactId>schedulehelper</artifactId>
-	<version>0.0.4-SNAPSHOT</version>
+	<version>0.0.5-SNAPSHOT</version>
 	<name>ScheduleHelper</name>
 	<description>Team scheduling optimization based on performance metrics</description>
 	<url>https://github.com/LZX1000/ScheduleHelper</url>
@@ -29,6 +29,12 @@
 	</scm>
 	<properties>
 		<java.version>24</java.version>
+		<sonar.projectKey>ScheduleHelper</sonar.projectKey>
+		<sonar.projectName>ScheduleHelper</sonar.projectName>
+		<sonar.host.url>http://localhost:9000</sonar.host.url>
+		<sonar.coverage.jacoco.xmlReportPaths>
+			${project.build.directory}/site/jacoco/jacoco.xml
+		</sonar.coverage.jacoco.xmlReportPaths>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -67,6 +73,25 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.13</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

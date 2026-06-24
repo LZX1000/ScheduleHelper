@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.schedulehelper.api.entity.Employee;
 import com.schedulehelper.api.exception.EmployeeNotFoundException;
 import com.schedulehelper.api.exception.IdGenerationFailedException;
+import com.schedulehelper.api.exception.MissingEmployeeContentException;
 import com.schedulehelper.api.repository.EmployeeRepository;
 
 /**
@@ -38,6 +39,8 @@ public class EmployeeService {
         this.employeeRepository = employeeRepository;
     }
 
+    // --- Create ---
+
     /**
      * Creates a new {@link Employee} in the database.
      *
@@ -47,18 +50,28 @@ public class EmployeeService {
      *
      * @param employee the employee entity to create; must not have an ID
      *
+     * @return created employee
+     * 
+     * @throws MissingEmployeeContentException if the employee object is missing
      * @throws IllegalArgumentException if the employee already has an ID
      * @throws IdGenerationFailedException if the persistence layer fails to generate an ID
      */
     @Transactional
-    public void createNew(final Employee employee) {
+    public Employee createNew(final Employee employee) {
+        if (employee == null) {
+            LOG.warn("Attempted to create employee with no content");
+            throw new MissingEmployeeContentException();
+        }
+
         final Integer employeeId = employee.getId();
+
         if (employeeId != null) {
             LOG.warn("Attempted to create employee with predefined id {}", employeeId);
             throw new IllegalArgumentException("New employee must not have an ID.");
         }
 
-        final Integer savedEmployeeId = this.employeeRepository.save(employee).getId();
+        final Employee savedEmployee = this.employeeRepository.save(employee);
+        final Integer savedEmployeeId = savedEmployee.getId();
 
         if (savedEmployeeId == null) {
             LOG.warn("Id generation failed for new employee.");
@@ -66,36 +79,10 @@ public class EmployeeService {
         }
 
         LOG.info("Created new employee with id {}", savedEmployeeId);
+        return savedEmployee;
     }
 
-    /**
-     * Updates a given {@link Employee} in the persistence layer.
-     *
-     * <p>This method requires that the provided employee has an ID.
-     * If the ID is missing or does not correspond to an existing employee,
-     * the update attempt is rejected.
-     *
-     * @param employee the updated employee entity; must have an ID
-     *
-     * @throws IllegalArgumentException if the employee does not have an ID
-     * @throws EmployeeNotFoundException if the ID is not in the persistence layer
-     */
-    @Transactional
-    public void updateById(final Employee employee) {
-        final Integer employeeId = employee.getId();
-
-        if (employeeId == null) {
-            LOG.warn("Attempted to update employee with null id");
-            throw new IllegalArgumentException("Employee must have an ID to be updated.");
-        }
-        if (!this.employeeRepository.existsById(employeeId)) {
-            LOG.warn("Attempted to update non-existent employee with id {}", employeeId);
-            throw new EmployeeNotFoundException(employeeId);
-        }
-
-        this.employeeRepository.save(employee);
-        LOG.info("Updated employee with id {}", employeeId);
-    }
+    // --- Read ---
 
     /**
      * Finds matching {@link Employee Employees} by partial first and/or last name.
@@ -116,6 +103,63 @@ public class EmployeeService {
     }
 
     /**
+     * Finds an {@link Employee} in the persistence layer by ID.
+     *
+     * @param employeeId the ID of the employee to find
+     * 
+     * @return the matching employee
+     *
+     * @throws EmployeeNotFoundException if the ID is not in the persistence layer
+     */
+    @Transactional(readOnly = true)
+    public Employee findById(final Integer employeeId) {
+        return this.employeeRepository.findById(employeeId)
+            .orElseThrow(() -> new EmployeeNotFoundException(employeeId));
+    }
+
+    // --- Update ---
+
+    /**
+     * Updates a given {@link Employee} in the persistence layer.
+     *
+     * <p>This method requires that the provided employee has an ID.
+     * If the ID is missing or does not correspond to an existing employee,
+     * the update attempt is rejected.
+     *
+     * @param employee the updated employee entity; must have an ID
+     * 
+     * @return updated employee
+     * 
+     * @throws MissingEmployeeContentException if the employee object is missing
+     * @throws IllegalArgumentException if the employee does not have an ID
+     * @throws EmployeeNotFoundException if the ID is not in the persistence layer
+     */
+    @Transactional
+    public Employee updateById(final Employee employee) {
+        if (employee == null) {
+            LOG.warn("Attempted to create employee with no content");
+            throw new MissingEmployeeContentException();
+        }
+    
+        final Integer employeeId = employee.getId();
+
+        if (employeeId == null) {
+            LOG.warn("Attempted to update employee with null id");
+            throw new IllegalArgumentException("Employee must have an ID to be updated.");
+        }
+        if (!this.employeeRepository.existsById(employeeId)) {
+            LOG.warn("Attempted to update non-existent employee with id {}", employeeId);
+            throw new EmployeeNotFoundException(employeeId);
+        }
+
+        final Employee savedEmployee = this.employeeRepository.save(employee);
+        LOG.info("Updated employee with id {}", employeeId);
+        return savedEmployee;
+    }
+
+    // --- Delete ---
+
+    /**
      * Deletes an {@link Employee} from the persistence layer by ID.
      *
      * <p>If no employee exists with the given ID, the deletion attempt is rejected.
@@ -133,20 +177,5 @@ public class EmployeeService {
         
         this.employeeRepository.deleteById(employeeId);
         LOG.info("Deleted employee with id {}", employeeId);
-    }
-
-    /**
-     * Finds an {@link Employee} in the persistence layer by ID.
-     *
-     * @param employeeId the ID of the employee to find
-     * 
-     * @return the matching employee
-     *
-     * @throws EmployeeNotFoundException if the ID is not in the persistence layer
-     */
-    @Transactional(readOnly = true)
-    public Employee findById(final Integer employeeId) {
-        return this.employeeRepository.findById(employeeId)
-            .orElseThrow(() -> new EmployeeNotFoundException(employeeId));
     }
 }
