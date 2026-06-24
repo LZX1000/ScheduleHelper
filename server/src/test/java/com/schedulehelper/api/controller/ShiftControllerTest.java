@@ -28,6 +28,7 @@ import com.schedulehelper.api.entity.Shift;
 import com.schedulehelper.api.exception.EmployeeNotFoundException;
 import com.schedulehelper.api.exception.IdGenerationFailedException;
 import com.schedulehelper.api.exception.MissingRoleTypeContentException;
+import com.schedulehelper.api.exception.MissingShiftContentException;
 import com.schedulehelper.api.exception.ShiftNotFoundException;
 import com.schedulehelper.api.service.ShiftService;
 
@@ -62,7 +63,7 @@ public class ShiftControllerTest {
     @Test
     public void testCreateNew_missingShiftContent_exceptionHandlerIntercept() throws Exception {
         when (this.shiftService.createNew(null))
-            .thenThrow(new MissingRoleTypeContentException());
+            .thenThrow(new MissingShiftContentException());
 
         mockMvc.perform(post("/api/shift"))
             .andExpect(status().isBadRequest());
