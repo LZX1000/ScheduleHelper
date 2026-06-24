@@ -17,7 +17,7 @@ import com.schedulehelper.api.service.ShiftRoleService;
 @RestController
 @RequestMapping("/api/shift-role")
 public class ShiftRoleController {
-    final private ShiftRoleService shiftRoleService;
+    private final ShiftRoleService shiftRoleService;
 
     ShiftRoleController(final ShiftRoleService shiftRoleService) {
         this.shiftRoleService = shiftRoleService;
