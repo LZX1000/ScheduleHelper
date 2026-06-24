@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.schedulehelper.api.entity.ShiftRole;
 import com.schedulehelper.api.exception.IdGenerationFailedException;
+import com.schedulehelper.api.exception.MissingShiftRoleContentException;
 import com.schedulehelper.api.exception.ShiftRoleNotFoundException;
 import com.schedulehelper.api.repository.ShiftRoleRepository;
 
@@ -54,6 +55,11 @@ public class ShiftRoleServiceTest {
         when(shiftRole.getId()).thenReturn(1);
 
         assertThrows(IllegalArgumentException.class, () -> this.shiftRoleService.createNew(shiftRole));
+    }
+
+    @Test
+    public void testCreateNew_missingShiftRoleContent_throwsException() {
+        assertThrows(MissingShiftRoleContentException.class, () -> this.shiftRoleService.createNew(null));
     }
 
     @Test
@@ -102,6 +108,11 @@ public class ShiftRoleServiceTest {
         when(shiftRole.getId()).thenReturn(null);
 
         assertThrows(IllegalArgumentException.class, () -> this.shiftRoleService.updateById(shiftRole));
+    }
+
+    @Test
+    public void testUpdateById_missingShiftRoleContent_throwsException() {
+        assertThrows(MissingShiftRoleContentException.class, () -> this.shiftRoleService.updateById(null));
     }
 
     @Test

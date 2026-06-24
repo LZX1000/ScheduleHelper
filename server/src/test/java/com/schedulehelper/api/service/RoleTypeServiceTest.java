@@ -17,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.schedulehelper.api.entity.RoleType;
 import com.schedulehelper.api.exception.IdGenerationFailedException;
+import com.schedulehelper.api.exception.MissingRoleTypeContentException;
 import com.schedulehelper.api.exception.RoleTypeNotFoundException;
 import com.schedulehelper.api.repository.RoleTypeRepository;
 
@@ -105,6 +106,11 @@ public class RoleTypeServiceTest {
     }
 
     @Test
+    public void testCreateNew_missingRoleTypeContent_throwsException() {
+        assertThrows(MissingRoleTypeContentException.class, () -> this.roleTypeService.createNew(null));
+    }
+
+    @Test
     public void testCreateNew_idGenerationFailed_throwsException() {
         final RoleType roleType = mock(RoleType.class);
         when(roleType.getId()).thenReturn(null);
@@ -150,6 +156,11 @@ public class RoleTypeServiceTest {
         when(roleType.getId()).thenReturn(null);
 
         assertThrows(IllegalArgumentException.class, () -> this.roleTypeService.updateById(roleType));
+    }
+
+    @Test
+    public void testUpdateById_missingRoleTypeContent_throwsException() {
+        assertThrows(MissingRoleTypeContentException.class, () -> this.roleTypeService.updateById(null));
     }
 
     @Test

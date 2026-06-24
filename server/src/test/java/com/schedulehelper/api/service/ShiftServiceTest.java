@@ -18,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.schedulehelper.api.entity.Shift;
 import com.schedulehelper.api.exception.IdGenerationFailedException;
+import com.schedulehelper.api.exception.MissingShiftContentException;
 import com.schedulehelper.api.exception.ShiftNotFoundException;
 import com.schedulehelper.api.repository.ShiftRepository;
 
@@ -85,6 +86,11 @@ public class ShiftServiceTest {
     }
 
     @Test
+    public void testCreateNew_missingShiftContent_throwsException() {
+        assertThrows(MissingShiftContentException.class, () -> this.shiftService.createNew(null));
+    }
+
+    @Test
     public void testCreateNew_idGenerationFailed_throwsException() {
         final Shift shift = mock(Shift.class);
         final Shift savedshift = mock(Shift.class);
@@ -133,6 +139,11 @@ public class ShiftServiceTest {
         when(shift.getId()).thenReturn(null);
 
         assertThrows(IllegalArgumentException.class, () -> this.shiftService.updateById(shift));
+    }
+
+    @Test
+    public void testUpdateById_missingShiftContent_throwsException() {
+        assertThrows(MissingShiftContentException.class, () -> this.shiftService.updateById(null));
     }
 
     @Test
