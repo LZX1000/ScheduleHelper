@@ -29,7 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @Tag("repository")
 @DataJpaTest
-public class ShiftRoleRepositoryIT {
+class ShiftRoleRepositoryIT {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 

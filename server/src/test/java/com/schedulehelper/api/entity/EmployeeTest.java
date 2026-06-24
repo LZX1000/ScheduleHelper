@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Unit tests for {@link Employee}.
  */
-public class EmployeeTest {
+class EmployeeTest {
     private final List<Employee> employees = new ArrayList<>();
 
     private Employee firstNameOnly;

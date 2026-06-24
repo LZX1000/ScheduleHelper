@@ -33,7 +33,7 @@ import com.schedulehelper.api.service.RoleTypeService;
 import tools.jackson.databind.ObjectMapper;
 
 @WebMvcTest(RoleTypeController.class)
-public class RoleTypeControllerTest {
+class RoleTypeControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
@@ -48,7 +48,7 @@ public class RoleTypeControllerTest {
     // -- createNew --
 
     @Test
-    public void testCreateNew_illegalArgument_exceptionHandlerIntercept() throws Exception {
+    void testCreateNew_illegalArgument_exceptionHandlerIntercept() throws Exception {
         when(this.roleTypeService.createNew(any(RoleType.class)))
             .thenThrow(new IllegalArgumentException("New shift role must not have an ID."));
 
@@ -59,7 +59,7 @@ public class RoleTypeControllerTest {
     }
 
     @Test
-    public void testCreateNew_missingRoleTypeContent_exceptionHandlerIntercept() throws Exception {
+    void testCreateNew_missingRoleTypeContent_exceptionHandlerIntercept() throws Exception {
         when (this.roleTypeService.createNew(null))
             .thenThrow(new MissingRoleTypeContentException());
 
@@ -68,7 +68,7 @@ public class RoleTypeControllerTest {
     }
     
     @Test
-    public void testCreateNew_idGenerationFailed_exceptionHandlerIntercept() throws Exception {
+    void testCreateNew_idGenerationFailed_exceptionHandlerIntercept() throws Exception {
         when(this.roleTypeService.createNew(any(RoleType.class)))
             .thenThrow(new IdGenerationFailedException("Id generation failed for new roleType."));
 
@@ -79,7 +79,7 @@ public class RoleTypeControllerTest {
     }
 
     @Test
-    public void testCreateNew_success() throws Exception {
+    void testCreateNew_success() throws Exception {
         final RoleType roleType = mock(RoleType.class);
         final String roleTypeJson = this.objectMapper.writeValueAsString(roleType);
 
@@ -97,7 +97,7 @@ public class RoleTypeControllerTest {
     // -- getByTitle --
 
     @Test
-    public void testGetByTitle_roleTypeNotFound() throws Exception {
+    void testGetByTitle_roleTypeNotFound() throws Exception {
         final String testTitle = "test";
 
         when(this.roleTypeService.findByTitle(testTitle)).thenThrow(RoleTypeNotFoundException.class);
@@ -107,7 +107,7 @@ public class RoleTypeControllerTest {
     }
 
     @Test
-    public void testGetByTitle_success() throws Exception {
+    void testGetByTitle_success() throws Exception {
         final String testTitle = "test";
         final RoleType expected = mock(RoleType.class);
         final String expectedJson = this.objectMapper.writeValueAsString(expected);
@@ -121,7 +121,7 @@ public class RoleTypeControllerTest {
     // -- getByPartialTitle --
 
     @Test
-    public void testFindByPartialTitle_nullSearch_success() throws Exception {
+    void testFindByPartialTitle_nullSearch_success() throws Exception {
         final List<RoleType> expected = List.of(mock(RoleType.class));
         final String expectedJson = new ObjectMapper().writeValueAsString(expected);
 
@@ -136,7 +136,7 @@ public class RoleTypeControllerTest {
     }
 
     @Test
-    public void testFindByPartialTitle_success() throws Exception {
+    void testFindByPartialTitle_success() throws Exception {
         final String testPartialTitle = "test";
         final List<RoleType> expected = List.of(mock(RoleType.class));
         final String expectedJson = new ObjectMapper().writeValueAsString(expected);
@@ -155,7 +155,7 @@ public class RoleTypeControllerTest {
     // -- getById --
 
     @Test
-    public void testGetById_roleTypeNotFound_exceptionHandlerIntercept() throws Exception {
+    void testGetById_roleTypeNotFound_exceptionHandlerIntercept() throws Exception {
         final Integer testId = 0;
 
         when(this.roleTypeService.findById(testId)).thenThrow(RoleTypeNotFoundException.class);
@@ -165,7 +165,7 @@ public class RoleTypeControllerTest {
     }
 
     @Test
-    public void testGetById_success() throws Exception {
+    void testGetById_success() throws Exception {
         final RoleType expected = mock(RoleType.class);
         final String expectedJson = new ObjectMapper().writeValueAsString(expected);
         final Integer testId = 0;
@@ -184,7 +184,7 @@ public class RoleTypeControllerTest {
     // -- updateById --
 
     @Test
-    public void testUpdateById_missingRoleTypeContent_exceptionHandlerIntercept() throws Exception {
+    void testUpdateById_missingRoleTypeContent_exceptionHandlerIntercept() throws Exception {
         when(this.roleTypeService.updateById(null))
             .thenThrow(new MissingRoleTypeContentException());
 
@@ -193,7 +193,7 @@ public class RoleTypeControllerTest {
     }
 
     @Test
-    public void testUpdateById_illegalArgument_exceptionHandlerIntercept() throws Exception {
+    void testUpdateById_illegalArgument_exceptionHandlerIntercept() throws Exception {
         when(this.roleTypeService.updateById(any(RoleType.class)))
             .thenThrow(new IllegalArgumentException("RoleType must have an ID to be updated."));
 
@@ -204,7 +204,7 @@ public class RoleTypeControllerTest {
     }
 
     @Test
-    public void testUpdateById_roleTypeNotFound_exceptionHandlerIntercept() throws Exception {
+    void testUpdateById_roleTypeNotFound_exceptionHandlerIntercept() throws Exception {
         when(this.roleTypeService.updateById(any(RoleType.class)))
             .thenThrow(new RoleTypeNotFoundException(0));
 
@@ -215,7 +215,7 @@ public class RoleTypeControllerTest {
     }
 
     @Test
-    public void testUpdateById_success() throws Exception {
+    void testUpdateById_success() throws Exception {
         final RoleType roleType = mock(RoleType.class);
         final String roleTypeJson = this.objectMapper.writeValueAsString(roleType);
 
@@ -233,7 +233,7 @@ public class RoleTypeControllerTest {
     // -- deleteById --
 
     @Test
-    public void testDeleteById_roleTypeNotFound_exceptionHandlerIntercept() throws Exception {
+    void testDeleteById_roleTypeNotFound_exceptionHandlerIntercept() throws Exception {
         final Integer testId = 0;
 
         doThrow(new EmployeeNotFoundException(0)).when(this.roleTypeService).deleteById(any(Integer.class));
@@ -243,7 +243,7 @@ public class RoleTypeControllerTest {
     }
 
     @Test
-    public void testDeleteById_success() throws Exception {
+    void testDeleteById_success() throws Exception {
         final Integer testId = 0;
 
         doNothing().when(this.roleTypeService).deleteById(testId);

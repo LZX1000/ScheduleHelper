@@ -32,7 +32,7 @@ import com.schedulehelper.api.service.EmployeeService;
 import tools.jackson.databind.ObjectMapper;
 
 @WebMvcTest(EmployeeController.class)
-public class EmployeeControllerTest {
+class EmployeeControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
@@ -47,7 +47,7 @@ public class EmployeeControllerTest {
     // -- createNew --
 
     @Test
-    public void testCreateNew_illegalArgument_exceptionHandlerIntercept() throws Exception {
+    void testCreateNew_illegalArgument_exceptionHandlerIntercept() throws Exception {
         when(this.employeeService.createNew(any(Employee.class)))
             .thenThrow(new IllegalArgumentException("New employee must not have an ID."));
 
@@ -58,7 +58,7 @@ public class EmployeeControllerTest {
     }
 
     @Test
-    public void testCreateNew_missingEmployeeContent_exceptionHandlerIntercept() throws Exception {
+    void testCreateNew_missingEmployeeContent_exceptionHandlerIntercept() throws Exception {
         when (this.employeeService.createNew(null))
             .thenThrow(new MissingEmployeeContentException());
 
@@ -67,7 +67,7 @@ public class EmployeeControllerTest {
     }
     
     @Test
-    public void testCreateNew_idGenerationFailed_exceptionHandlerIntercept() throws Exception {
+    void testCreateNew_idGenerationFailed_exceptionHandlerIntercept() throws Exception {
         when(this.employeeService.createNew(any(Employee.class)))
             .thenThrow(new IdGenerationFailedException("Id generation failed for new employee."));
 
@@ -78,7 +78,7 @@ public class EmployeeControllerTest {
     }
 
     @Test
-    public void testCreateNew_success() throws Exception {
+    void testCreateNew_success() throws Exception {
         final Employee employee = mock(Employee.class);
         final String employeeJson = new ObjectMapper().writeValueAsString(employee);
 
@@ -96,7 +96,7 @@ public class EmployeeControllerTest {
     // -- findByPartialName --
 
     @Test
-    public void testFindByPartialName_nullSearch_success() throws Exception {
+    void testFindByPartialName_nullSearch_success() throws Exception {
         final List<Employee> expected = List.of(mock(Employee.class));
         final String expectedJson = new ObjectMapper().writeValueAsString(expected);
 
@@ -111,7 +111,7 @@ public class EmployeeControllerTest {
     }
 
     @Test
-    public void testFindByPartialName_success() throws Exception {
+    void testFindByPartialName_success() throws Exception {
         final List<Employee> expected = List.of(mock(Employee.class));
         final String expectedJson = new ObjectMapper().writeValueAsString(expected);
 
@@ -130,7 +130,7 @@ public class EmployeeControllerTest {
     // -- getById --
 
     @Test
-    public void testGetById_employeeNotFound_exceptionHandlerIntercept() throws Exception {
+    void testGetById_employeeNotFound_exceptionHandlerIntercept() throws Exception {
         final Integer testId = 0;
 
         when(this.employeeService.findById(testId)).thenThrow(EmployeeNotFoundException.class);
@@ -140,7 +140,7 @@ public class EmployeeControllerTest {
     }
 
     @Test
-    public void testGetById_success() throws Exception {
+    void testGetById_success() throws Exception {
         final Employee expected = mock(Employee.class);
         final String expectedJson = new ObjectMapper().writeValueAsString(expected);
         final Integer testId = 0;
@@ -159,7 +159,7 @@ public class EmployeeControllerTest {
     // -- updateById --
 
     @Test
-    public void testUpdateById_missingEmployeeContent_exceptionHandlerIntercept() throws Exception {
+    void testUpdateById_missingEmployeeContent_exceptionHandlerIntercept() throws Exception {
         when(this.employeeService.updateById(null))
             .thenThrow(new MissingEmployeeContentException());
 
@@ -168,7 +168,7 @@ public class EmployeeControllerTest {
     }
 
     @Test
-    public void testUpdateById_illegalArgument_exceptionHandlerIntercept() throws Exception {
+    void testUpdateById_illegalArgument_exceptionHandlerIntercept() throws Exception {
         when(this.employeeService.updateById(any(Employee.class)))
             .thenThrow(new IllegalArgumentException("Employee must have an ID to be updated."));
 
@@ -179,7 +179,7 @@ public class EmployeeControllerTest {
     }
 
     @Test
-    public void testUpdateById_employeeNotFound_exceptionHandlerIntercept() throws Exception {
+    void testUpdateById_employeeNotFound_exceptionHandlerIntercept() throws Exception {
         when(this.employeeService.updateById(any(Employee.class)))
             .thenThrow(new EmployeeNotFoundException(0));
 
@@ -190,7 +190,7 @@ public class EmployeeControllerTest {
     }
 
     @Test
-    public void testUpdateById_success() throws Exception {
+    void testUpdateById_success() throws Exception {
         final Employee employee = mock(Employee.class);
         final String employeeJson = new ObjectMapper().writeValueAsString(employee);
 
@@ -208,7 +208,7 @@ public class EmployeeControllerTest {
     // -- deleteById --
 
     @Test
-    public void testDeleteById_employeeNotFound_exceptionHandlerIntercept() throws Exception {
+    void testDeleteById_employeeNotFound_exceptionHandlerIntercept() throws Exception {
         final Integer test_id = 0;
 
         doThrow(new EmployeeNotFoundException(0)).when(this.employeeService).deleteById(any(Integer.class));
@@ -218,7 +218,7 @@ public class EmployeeControllerTest {
     }
 
     @Test
-    public void testDeleteById_success() throws Exception {
+    void testDeleteById_success() throws Exception {
         final Integer test_id = 0;
 
         doNothing().when(this.employeeService).deleteById(test_id);

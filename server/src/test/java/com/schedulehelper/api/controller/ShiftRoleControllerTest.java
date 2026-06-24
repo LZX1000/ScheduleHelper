@@ -31,7 +31,7 @@ import com.schedulehelper.api.service.ShiftRoleService;
 import tools.jackson.databind.ObjectMapper;
 
 @WebMvcTest(ShiftRoleController.class)
-public class ShiftRoleControllerTest {
+class ShiftRoleControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
@@ -46,7 +46,7 @@ public class ShiftRoleControllerTest {
     // -- createNew --
 
     @Test
-    public void testCreateNew_illegalArgument_exceptionHandlerIntercept() throws Exception {
+    void testCreateNew_illegalArgument_exceptionHandlerIntercept() throws Exception {
         when(this.shiftRoleService.createNew(any(ShiftRole.class)))
             .thenThrow(new IllegalArgumentException("New shift role must not have an ID."));
 
@@ -57,7 +57,7 @@ public class ShiftRoleControllerTest {
     }
 
     @Test
-    public void testCreateNew_missingShiftRoleContent_exceptionHandlerIntercept() throws Exception {
+    void testCreateNew_missingShiftRoleContent_exceptionHandlerIntercept() throws Exception {
         when (this.shiftRoleService.createNew(null))
             .thenThrow(new MissingShiftRoleContentException());
 
@@ -66,7 +66,7 @@ public class ShiftRoleControllerTest {
     }
     
     @Test
-    public void testCreateNew_idGenerationFailed_exceptionHandlerIntercept() throws Exception {
+    void testCreateNew_idGenerationFailed_exceptionHandlerIntercept() throws Exception {
         when(this.shiftRoleService.createNew(any(ShiftRole.class)))
             .thenThrow(new IdGenerationFailedException("Id generation failed for new shiftRole."));
 
@@ -77,7 +77,7 @@ public class ShiftRoleControllerTest {
     }
 
     @Test
-    public void testCreateNew_success() throws Exception {
+    void testCreateNew_success() throws Exception {
         final ShiftRole shiftRole = mock(ShiftRole.class);
         final String roleTypeJson = this.objectMapper.writeValueAsString(shiftRole);
 
@@ -95,7 +95,7 @@ public class ShiftRoleControllerTest {
     // -- getById --
 
     @Test
-    public void testGetById_shiftRoleNotFound_exceptionHandlerIntercept() throws Exception {
+    void testGetById_shiftRoleNotFound_exceptionHandlerIntercept() throws Exception {
         final Integer testId = 0;
 
         when(this.shiftRoleService.findById(testId)).thenThrow(ShiftRoleNotFoundException.class);
@@ -105,7 +105,7 @@ public class ShiftRoleControllerTest {
     }
 
     @Test
-    public void testGetById_success() throws Exception {
+    void testGetById_success() throws Exception {
         final ShiftRole expected = mock(ShiftRole.class);
         final String expectedJson = new ObjectMapper().writeValueAsString(expected);
         final Integer testId = 0;
@@ -124,7 +124,7 @@ public class ShiftRoleControllerTest {
     // -- updateById --
 
     @Test
-    public void testUpdateById_missingShiftRoleContent_exceptionHandlerIntercept() throws Exception {
+    void testUpdateById_missingShiftRoleContent_exceptionHandlerIntercept() throws Exception {
         when(this.shiftRoleService.updateById(null))
             .thenThrow(new MissingShiftRoleContentException());
 
@@ -133,7 +133,7 @@ public class ShiftRoleControllerTest {
     }
 
     @Test
-    public void testUpdateById_illegalArgument_exceptionHandlerIntercept() throws Exception {
+    void testUpdateById_illegalArgument_exceptionHandlerIntercept() throws Exception {
         when(this.shiftRoleService.updateById(any(ShiftRole.class)))
             .thenThrow(new IllegalArgumentException("ShiftRole must have an ID to be updated."));
 
@@ -144,7 +144,7 @@ public class ShiftRoleControllerTest {
     }
 
     @Test
-    public void testUpdateById_shiftRoleNotFound_exceptionHandlerIntercept() throws Exception {
+    void testUpdateById_shiftRoleNotFound_exceptionHandlerIntercept() throws Exception {
         when(this.shiftRoleService.updateById(any(ShiftRole.class)))
             .thenThrow(new RoleTypeNotFoundException(0));
 
@@ -155,7 +155,7 @@ public class ShiftRoleControllerTest {
     }
 
     @Test
-    public void testUpdateById_success() throws Exception {
+    void testUpdateById_success() throws Exception {
         final ShiftRole shiftRole = mock(ShiftRole.class);
         final String shiftRoleJson = this.objectMapper.writeValueAsString(shiftRole);
 
@@ -173,7 +173,7 @@ public class ShiftRoleControllerTest {
     // -- deleteById --
 
     @Test
-    public void testDeleteById_shiftRoleNotFound_exceptionHandlerIntercept() throws Exception {
+    void testDeleteById_shiftRoleNotFound_exceptionHandlerIntercept() throws Exception {
         final Integer testId = 0;
 
         doThrow(new EmployeeNotFoundException(0)).when(this.shiftRoleService).deleteById(any(Integer.class));
@@ -183,7 +183,7 @@ public class ShiftRoleControllerTest {
     }
 
     @Test
-    public void testDeleteById_success() throws Exception {
+    void testDeleteById_success() throws Exception {
         final Integer testId = 0;
 
         doNothing().when(this.shiftRoleService).deleteById(testId);
