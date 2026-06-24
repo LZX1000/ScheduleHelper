@@ -9,6 +9,7 @@ import com.schedulehelper.api.exception.EmployeeNotFoundException;
 import com.schedulehelper.api.exception.IdGenerationFailedException;
 import com.schedulehelper.api.exception.MissingEmployeeContentException;
 import com.schedulehelper.api.exception.MissingRoleTypeContentException;
+import com.schedulehelper.api.exception.MissingShiftContentException;
 import com.schedulehelper.api.exception.MissingShiftRoleContentException;
 import com.schedulehelper.api.exception.RoleTypeNotFoundException;
 import com.schedulehelper.api.exception.ScheduleHelperException;
@@ -53,6 +54,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MissingShiftRoleContentException.class)
     public ResponseEntity<String> handleMissingContent(MissingShiftRoleContentException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
+    @ExceptionHandler(MissingShiftContentException.class)
+    public ResponseEntity<String> handleMissingContent(MissingShiftContentException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 
