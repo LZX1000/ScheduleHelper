@@ -20,7 +20,7 @@ import com.schedulehelper.api.entity.RoleType;
  */
 @Tag("repository")
 @DataJpaTest
-public class RoleTypeRepositoryIT {
+class RoleTypeRepositoryIT {
     @Autowired
     private RoleTypeRepository roleTypeRepository;
 

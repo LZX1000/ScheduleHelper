@@ -17,7 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
  */
 @Tag("entity")
 @ExtendWith(MockitoExtension.class)
-public class ShiftRoleTest {
+class ShiftRoleTest {
     private final List<ShiftRole> shiftRoles = new ArrayList<>();
 
     private Shift shift;

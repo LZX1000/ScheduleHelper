@@ -17,11 +17,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.schedulehelper.api.entity.RoleType;
 import com.schedulehelper.api.exception.IdGenerationFailedException;
+import com.schedulehelper.api.exception.MissingRoleTypeContentException;
 import com.schedulehelper.api.exception.RoleTypeNotFoundException;
 import com.schedulehelper.api.repository.RoleTypeRepository;
 
 @ExtendWith(MockitoExtension.class)
-public class RoleTypeServiceTest {
+class RoleTypeServiceTest {
     @Mock
     private RoleTypeRepository roleTypeRepository;
 
@@ -31,14 +32,14 @@ public class RoleTypeServiceTest {
     // --- findByTitle ---
 
     @Test
-    public void testFindByTitle_notFound() {
+    void testFindByTitle_notFound() {
         when(this.roleTypeRepository.findByTitle("test")).thenReturn(Optional.empty());
 
         assertThrows(RoleTypeNotFoundException.class, () -> this.roleTypeService.findByTitle("test"));
     }
 
     @Test
-    public void testFindByTitle() {
+    void testFindByTitle() {
         final RoleType roleType = mock(RoleType.class);
         when(this.roleTypeRepository.findByTitle("test")).thenReturn(Optional.of(roleType));
 
@@ -49,43 +50,43 @@ public class RoleTypeServiceTest {
     // --- findByPartialTitle ---
 
     @Test
-    public void testFindByPartialTitle_empty() {
+    void testFindByPartialTitle_empty() {
         final List<RoleType> expected = List.of();
         when(this.roleTypeRepository.findByPartialTitle("test")).thenReturn(expected);
 
-        final List<RoleType> result = this.roleTypeService.findByPartialTitle("test");
+        final List<RoleType> result = this.roleTypeService.findByPartialTitle(Optional.of("test"));
         assertEquals(result, expected);
     }
 
     @Test
-    public void testFindByPartialTitle_multipleMatches() {
+    void testFindByPartialTitle_multipleMatches() {
         final List<RoleType> expected = List.of(mock(RoleType.class), mock(RoleType.class));
         when(this.roleTypeRepository.findByPartialTitle("test")).thenReturn(expected);
 
-        final List<RoleType> result = this.roleTypeService.findByPartialTitle("test");
+        final List<RoleType> result = this.roleTypeService.findByPartialTitle(Optional.of("test"));
         assertEquals(expected, result);
     }
 
     @Test
-    public void testFindByPartialTitle_singleMatch() {
+    void testFindByPartialTitle_singleMatch() {
         final List<RoleType> expected = List.of(mock(RoleType.class));
         when(this.roleTypeRepository.findByPartialTitle("test")).thenReturn(expected);
 
-        final List<RoleType> result = this.roleTypeService.findByPartialTitle("test");
+        final List<RoleType> result = this.roleTypeService.findByPartialTitle(Optional.of("test"));
         assertEquals(expected, result);
     }
 
     // --- findById ---
 
     @Test
-    public void testFindById_notFound() {
+    void testFindById_notFound() {
         when(this.roleTypeRepository.findById(99)).thenReturn(Optional.empty());
 
         assertThrows(RoleTypeNotFoundException.class, () -> this.roleTypeService.findById(99));
     }
 
     @Test
-    public void testFindById() {
+    void testFindById() {
         final RoleType roleType = mock(RoleType.class);
         when(this.roleTypeRepository.findById(1)).thenReturn(Optional.of(roleType));
 
@@ -97,7 +98,7 @@ public class RoleTypeServiceTest {
     // --- createNew ---
 
     @Test
-    public void testCreateNew_withId_throwsException() {
+    void testCreateNew_withId_throwsException() {
         final RoleType roleType = mock(RoleType.class);
         when(roleType.getId()).thenReturn(1);
 
@@ -105,7 +106,12 @@ public class RoleTypeServiceTest {
     }
 
     @Test
-    public void testCreateNew_idGenerationFailed_throwsException() {
+    void testCreateNew_missingRoleTypeContent_throwsException() {
+        assertThrows(MissingRoleTypeContentException.class, () -> this.roleTypeService.createNew(null));
+    }
+
+    @Test
+    void testCreateNew_idGenerationFailed_throwsException() {
         final RoleType roleType = mock(RoleType.class);
         when(roleType.getId()).thenReturn(null);
         final RoleType savedRoleType = mock(RoleType.class);
@@ -116,27 +122,27 @@ public class RoleTypeServiceTest {
     }
 
     @Test
-    public void testCreateNew() {
+    void testCreateNew() {
         final RoleType roleType = mock(RoleType.class);
         when(roleType.getId()).thenReturn(null);
         final RoleType savedRoleType = mock(RoleType.class);
         when(savedRoleType.getId()).thenReturn(1);
         when(this.roleTypeRepository.save(roleType)).thenReturn(savedRoleType);
 
-        assertDoesNotThrow(() -> this.roleTypeService.createNew(roleType));
+        assertEquals(savedRoleType, this.roleTypeService.createNew(roleType));
     }
 
     // --- deleteById ---
 
     @Test
-    public void testDeleteById_doesNotExist_throwsException() {
+    void testDeleteById_doesNotExist_throwsException() {
         when(this.roleTypeRepository.existsById(1)).thenReturn(false);
 
         assertThrows(RoleTypeNotFoundException.class, () -> this.roleTypeService.deleteById(1));
     }
 
     @Test
-    public void testDeleteById() {
+    void testDeleteById() {
         when(this.roleTypeRepository.existsById(1)).thenReturn(true);
 
         assertDoesNotThrow(() -> this.roleTypeService.deleteById(1));
@@ -145,7 +151,7 @@ public class RoleTypeServiceTest {
     // --- updateById ---
 
     @Test
-    public void testUpdateById_nullId_throwsException() {
+    void testUpdateById_nullId_throwsException() {
         final RoleType roleType = mock(RoleType.class);
         when(roleType.getId()).thenReturn(null);
 
@@ -153,7 +159,12 @@ public class RoleTypeServiceTest {
     }
 
     @Test
-    public void testUpdateById_doesNotExist_throwsException() {
+    void testUpdateById_missingRoleTypeContent_throwsException() {
+        assertThrows(MissingRoleTypeContentException.class, () -> this.roleTypeService.updateById(null));
+    }
+
+    @Test
+    void testUpdateById_doesNotExist_throwsException() {
         final RoleType roleType = mock(RoleType.class);
         when(roleType.getId()).thenReturn(1);
         when(this.roleTypeRepository.existsById(1)).thenReturn(false);
@@ -162,11 +173,12 @@ public class RoleTypeServiceTest {
     }
 
     @Test
-    public void testUpdateById() {
+    void testUpdateById() {
         final RoleType roleType = mock(RoleType.class);
         when(roleType.getId()).thenReturn(1);
         when(this.roleTypeRepository.existsById(1)).thenReturn(true);
+        when(this.roleTypeRepository.save(roleType)).thenReturn(roleType);
 
-        assertDoesNotThrow(() -> this.roleTypeService.updateById(roleType));
+        assertEquals(roleType, this.roleTypeService.updateById(roleType));
     }
 }

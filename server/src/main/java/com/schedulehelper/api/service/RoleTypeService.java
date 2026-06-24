@@ -1,6 +1,7 @@
 package com.schedulehelper.api.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.schedulehelper.api.entity.RoleType;
 import com.schedulehelper.api.exception.IdGenerationFailedException;
+import com.schedulehelper.api.exception.MissingRoleTypeContentException;
 import com.schedulehelper.api.exception.RoleTypeNotFoundException;
 import com.schedulehelper.api.repository.RoleTypeRepository;
 
@@ -37,6 +39,51 @@ public class RoleTypeService {
         this.roleTypeRepository = roleTypeRepository;
     }
 
+    // --- Create ---
+
+    /**
+     * Creates a new {@link RoleType} in the database.
+     *
+     * <p>This method requires that the provided role type has no predefined ID.
+     * If an ID is present, the creation attempt is rejected. After creating
+     * the role type, the method verifies that an ID was successfully generated.
+     *
+     * @param roleType the role type entity to create; must not have an ID
+     *
+     * @return created role type
+     * 
+     * @throws MissingRoleTypeContentException if the role type object is missing
+     * @throws IllegalArgumentException if the role type already has an ID
+     * @throws IdGenerationFailedException if the persistence layer fails to generate an ID
+     */
+    @Transactional
+    public RoleType createNew(final RoleType roleType) {
+        if (roleType == null) {
+            LOG.warn("Attempted to create role_type with no content");
+            throw new MissingRoleTypeContentException();
+        }
+
+        final Integer roleTypeId = roleType.getId();
+
+        if (roleTypeId != null) {
+            LOG.warn("Attempted to create role_type with predefined id {}", roleTypeId);
+            throw new IllegalArgumentException("New RoleType must not have an ID.");
+        }
+
+        final RoleType savedRoleType = this.roleTypeRepository.save(roleType);
+        final Integer savedRoleTypeId = savedRoleType.getId();
+
+        if (savedRoleTypeId == null) {
+            LOG.warn("Id generation failed for new role_type.");
+            throw new IdGenerationFailedException("RoleType");
+        }
+
+        LOG.info("Created new employee with id {}", savedRoleTypeId);
+        return savedRoleType;
+    }
+
+    // --- Read ---
+
     /**
      * Finds a {@link RoleType} in the persistence layer by unique title.
      *
@@ -51,7 +98,7 @@ public class RoleTypeService {
         return this.roleTypeRepository.findByTitle(title).orElseThrow(() -> {
             LOG.warn("Attempted to find non-existent RoleType with title {}", title);
             throw new RoleTypeNotFoundException(
-                String.format("RoleType with title {} not found", title)
+                String.format("RoleType with title %s not found", title)
             );
         });
     }
@@ -64,8 +111,8 @@ public class RoleTypeService {
      * @return matching role types
      */
     @Transactional(readOnly = true)
-    public List<RoleType> findByPartialTitle(final String title) {
-        return this.roleTypeRepository.findByPartialTitle(title);
+    public List<RoleType> findByPartialTitle(final Optional<String> title) {
+        return this.roleTypeRepository.findByPartialTitle(title.orElse(null));
     }
 
     /**
@@ -83,35 +130,47 @@ public class RoleTypeService {
             .orElseThrow(() -> new RoleTypeNotFoundException(roleTypeId));
     }
 
+    // --- Update ---
+
     /**
-     * Creates a new {@link RoleType} in the database.
+     * Updates a given {@link RoleType} in the persistence layer.
      *
-     * <p>This method requires that the provided role type has no predefined ID.
-     * If an ID is present, the creation attempt is rejected. After creating
-     * the role type, the method verifies that an ID was successfully generated.
+     * <p>This method requires that the provided role type has an ID.
+     * If the ID is missing or does not correspond to an existing role type,
+     * the update attempt is rejected.
      *
-     * @param roleType the role type entity to create; must not have an ID
+     * @param roleType the updated role type entity; must have an ID
      *
-     * @throws IllegalArgumentException if the role type already has an ID
-     * @throws IdGenerationFailedException if the persistence layer fails to generate an ID
+     * @return updated role type
+     * 
+     * @throws MissingRoleTypeContentException if the role type object is missing
+     * @throws IllegalArgumentException if the role type does not have an ID
+     * @throws RoleTypeNotFoundException if the ID is not in the persistence layer
      */
     @Transactional
-    public void createNew(final RoleType roleType) {
+    public RoleType updateById(final RoleType roleType) {
+        if (roleType == null) {
+            LOG.warn("Attempted to create role_type with no content");
+            throw new MissingRoleTypeContentException();
+        }
+
         final Integer roleTypeId = roleType.getId();
-        if (roleTypeId != null) {
-            LOG.warn("Attempted to create role_type with predefined id {}", roleTypeId);
-            throw new IllegalArgumentException("New RoleType must not have an ID.");
+
+        if (roleTypeId == null) {
+            LOG.warn("Attempted to update role_type with null id");
+            throw new IllegalArgumentException("RoleType must have an ID to be updated.");
+        }
+        if (!this.roleTypeRepository.existsById(roleTypeId)) {
+            LOG.warn("Attempted to update non-existent role_type with id {}", roleTypeId);
+            throw new RoleTypeNotFoundException(roleTypeId);
         }
 
-        final Integer savedRoleTypeId = this.roleTypeRepository.save(roleType).getId();
-
-        if (savedRoleTypeId == null) {
-            LOG.warn("Id generation failed for new role_type.");
-            throw new IdGenerationFailedException("RoleType");
-        }
-
-        LOG.info("Created new employee with id {}", savedRoleTypeId);
+        final RoleType savedRoleType = this.roleTypeRepository.save(roleType);
+        LOG.info("Updated role_type with id {}", roleTypeId);
+        return savedRoleType;
     }
+
+    // --- Delete ---
 
     /**
      * Deletes a {@link RoleType} from the persistence layer by ID.
@@ -131,34 +190,5 @@ public class RoleTypeService {
         
         this.roleTypeRepository.deleteById(roleTypeId);
         LOG.info("Deleted role_type with id {}", roleTypeId);
-    }
-
-    /**
-     * Updates a given {@link RoleType} in the persistence layer.
-     *
-     * <p>This method requires that the provided role type has an ID.
-     * If the ID is missing or does not correspond to an existing role type,
-     * the update attempt is rejected.
-     *
-     * @param roleType the updated role type entity; must have an ID
-     *
-     * @throws IllegalArgumentException if the role type does not have an ID
-     * @throws RoleTypeNotFoundException if the ID is not in the persistence layer
-     */
-    @Transactional
-    public void updateById(final RoleType roleType) {
-        final Integer roleTypeId = roleType.getId();
-
-        if (roleTypeId == null) {
-            LOG.warn("Attempted to update role_type with null id");
-            throw new IllegalArgumentException("RoleType must have an ID to be updated.");
-        }
-        if (!this.roleTypeRepository.existsById(roleTypeId)) {
-            LOG.warn("Attempted to update non-existent role_type with id {}", roleTypeId);
-            throw new RoleTypeNotFoundException(roleTypeId);
-        }
-
-        this.roleTypeRepository.save(roleType);
-        LOG.info("Updated role_type with id {}", roleTypeId);
     }
 }

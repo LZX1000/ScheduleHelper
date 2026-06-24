@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Unit tests for {@link RoleType}.
  */
-public class RoleTypeTest {
+class RoleTypeTest {
     private final List<RoleType> roleTypes = new ArrayList<>();
 
     @BeforeEach

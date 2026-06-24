@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.schedulehelper.api.entity.ShiftRole;
 import com.schedulehelper.api.exception.IdGenerationFailedException;
+import com.schedulehelper.api.exception.MissingShiftRoleContentException;
 import com.schedulehelper.api.exception.ShiftRoleNotFoundException;
 import com.schedulehelper.api.repository.ShiftRoleRepository;
 
@@ -35,6 +36,51 @@ public class ShiftRoleService {
         this.shiftRoleRepository = shiftRoleRepository;
     }
 
+    // --- Create ---
+
+    /**
+     * Creates a new {@link ShifRole} in the database.
+     *
+     * <p>This method requires that the provided shift role has no predefined ID.
+     * If an ID is present, the creation attempt is rejected. After creating
+     * the shift role, the method verifies that an ID was successfully generated.
+     *
+     * @param shiftRole the shift role entity to create; must not have an ID
+     *
+     * @return created shift role
+     * 
+     * @throws MissingShiftRoleContentException if the shift role object is missing
+     * @throws IllegalArgumentException if the shift role already has an ID
+     * @throws IdGenerationFailedException if the persistence layer fails to generate an ID
+     */
+    @Transactional
+    public ShiftRole createNew(final ShiftRole shiftRole) {
+        if (shiftRole == null) {
+            LOG.warn("Attempted to create shift_role with no content");
+            throw new MissingShiftRoleContentException();
+        }
+
+        final Integer shiftRoleId = shiftRole.getId();
+
+        if (shiftRoleId != null) {
+            LOG.warn("Attempted to create shift_role with predefined id {}", shiftRoleId);
+            throw new IllegalArgumentException("New ShiftRole must not have an ID.");
+        }
+
+        final ShiftRole savedShiftRole = this.shiftRoleRepository.save(shiftRole);
+        final Integer savedShiftRoleId = savedShiftRole.getId();
+
+        if (savedShiftRoleId == null) {
+            LOG.warn("Id generation failed for new shift_role.");
+            throw new IdGenerationFailedException("ShiftRole");
+        }
+    
+        LOG.info("Created new shift with id {}", savedShiftRoleId);
+        return savedShiftRole;
+    }
+
+    // --- Read ---
+
     /**
      * Finds a {@link ShiftRole} in the persistence layer by ID.
      *
@@ -50,35 +96,47 @@ public class ShiftRoleService {
             .orElseThrow(() -> new ShiftRoleNotFoundException(shiftRoleId));
     }
 
+    // --- Update ---
+
     /**
-     * Creates a new {@link ShifRole} in the database.
+     * Updates a given {@link ShiftRole} in the persistence layer.
      *
-     * <p>This method requires that the provided shift role has no predefined ID.
-     * If an ID is present, the creation attempt is rejected. After creating
-     * the shift role, the method verifies that an ID was successfully generated.
+     * <p>This method requires that the provided shift role has an ID.
+     * If the ID is missing or does not correspond to an existing shift role,
+     * the update attempt is rejected.
      *
-     * @param shiftRole the shift role entity to create; must not have an ID
+     * @param shiftRole the updated shift role entity; must have an ID
      *
-     * @throws IllegalArgumentException if the shift role already has an ID
-     * @throws IdGenerationFailedException if the persistence layer fails to generate an ID
+     * @return updated shift role
+     * 
+     * @throws MissingShiftRoleContentException if the shift role object is missing
+     * @throws IllegalArgumentException if the shift role does not have an ID
+     * @throws ShiftRoleNotFoundException if the ID is not in the persistence layer
      */
     @Transactional
-    public void createNew(final ShiftRole shiftRole) {
+    public ShiftRole updateById(final ShiftRole shiftRole) {
+        if (shiftRole == null) {
+            LOG.warn("Attempted to create shift_role with no content");
+            throw new MissingShiftRoleContentException();
+        }
+
         final Integer shiftRoleId = shiftRole.getId();
-        if (shiftRoleId != null) {
-            LOG.warn("Attempted to create shift_role with predefined id {}", shiftRoleId);
-            throw new IllegalArgumentException("New ShiftRole must not have an ID.");
+
+        if (shiftRoleId == null) {
+            LOG.warn("Attempted to update shift_role with null id");
+            throw new IllegalArgumentException("ShiftRole must have an ID to be updated.");
+        }
+        if (!this.shiftRoleRepository.existsById(shiftRoleId)) {
+            LOG.warn("Attempted to update non-existent shift_role with id {}", shiftRoleId);
+            throw new ShiftRoleNotFoundException(shiftRoleId);
         }
 
-        final Integer savedShiftRoleId = this.shiftRoleRepository.save(shiftRole).getId();
-
-        if (savedShiftRoleId == null) {
-            LOG.warn("Id generation failed for new shift_role.");
-            throw new IdGenerationFailedException("ShiftRole");
-        }
-    
-        LOG.info("Created new shift with id {}", savedShiftRoleId);
+        final ShiftRole savedShiftRole = this.shiftRoleRepository.save(shiftRole);
+        LOG.info("Updated shift with id {}", shiftRoleId);
+        return savedShiftRole;
     }
+
+    // --- Delete ---
 
     /**
      * Deletes a {@link ShiftRole} from the persistence layer by ID.
@@ -98,34 +156,5 @@ public class ShiftRoleService {
         
         this.shiftRoleRepository.deleteById(shiftRoleId);
         LOG.info("Deleted shift with id {}", shiftRoleId);
-    }
-
-    /**
-     * Updates a given {@link ShiftRole} in the persistence layer.
-     *
-     * <p>This method requires that the provided shift role has an ID.
-     * If the ID is missing or does not correspond to an existing shift role,
-     * the update attempt is rejected.
-     *
-     * @param shiftRole the updated shift role entity; must have an ID
-     *
-     * @throws IllegalArgumentException if the shift role does not have an ID
-     * @throws ShiftRoleNotFoundException if the ID is not in the persistence layer
-     */
-    @Transactional
-    public void updateById(final ShiftRole shiftRole) {
-        final Integer shiftRoleId = shiftRole.getId();
-
-        if (shiftRoleId == null) {
-            LOG.warn("Attempted to update shift_role with null id");
-            throw new IllegalArgumentException("ShiftRole must have an ID to be updated.");
-        }
-        if (!this.shiftRoleRepository.existsById(shiftRoleId)) {
-            LOG.warn("Attempted to update non-existent shift_role with id {}", shiftRoleId);
-            throw new ShiftRoleNotFoundException(shiftRoleId);
-        }
-
-        this.shiftRoleRepository.save(shiftRole);
-        LOG.info("Updated shift with id {}", shiftRoleId);
     }
 }

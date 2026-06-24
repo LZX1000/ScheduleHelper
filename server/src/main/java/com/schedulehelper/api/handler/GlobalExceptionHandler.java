@@ -7,6 +7,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.schedulehelper.api.exception.EmployeeNotFoundException;
 import com.schedulehelper.api.exception.IdGenerationFailedException;
+import com.schedulehelper.api.exception.MissingEmployeeContentException;
+import com.schedulehelper.api.exception.MissingRoleTypeContentException;
+import com.schedulehelper.api.exception.MissingShiftContentException;
+import com.schedulehelper.api.exception.MissingShiftRoleContentException;
 import com.schedulehelper.api.exception.RoleTypeNotFoundException;
 import com.schedulehelper.api.exception.ScheduleHelperException;
 import com.schedulehelper.api.exception.ShiftNotFoundException;
@@ -14,6 +18,8 @@ import com.schedulehelper.api.exception.ShiftRoleNotFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    // --- Not Found
+
     @ExceptionHandler(EmployeeNotFoundException.class)
     public ResponseEntity<String> handleNotFound(EmployeeNotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -34,6 +40,30 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
+    // --- Content
+
+    @ExceptionHandler(MissingEmployeeContentException.class)
+    public ResponseEntity<String> handleMissingContent(MissingEmployeeContentException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
+    @ExceptionHandler(MissingRoleTypeContentException.class)
+    public ResponseEntity<String> handleMissingContent(MissingRoleTypeContentException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
+    @ExceptionHandler(MissingShiftRoleContentException.class)
+    public ResponseEntity<String> handleMissingContent(MissingShiftRoleContentException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
+    @ExceptionHandler(MissingShiftContentException.class)
+    public ResponseEntity<String> handleMissingContent(MissingShiftContentException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
+    // --- Internal
+
     @ExceptionHandler(IdGenerationFailedException.class)
     public ResponseEntity<String> handleGenerationFailed(IdGenerationFailedException e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
@@ -41,6 +71,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ScheduleHelperException.class)
     public ResponseEntity<String> handleAppError(ScheduleHelperException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleIllegalArgument(IllegalArgumentException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 }
