@@ -42,7 +42,6 @@ public class ShiftController {
         @RequestParam(required = false) final Optional<OffsetDateTime> start,
         @RequestParam(required = false) final Optional<OffsetDateTime> end
     ) {
-        // return ResponseEntity.status(HttpStatus.OK).body(this.shiftService.findByStartTimeBetween(start, end));
         return ResponseEntity.ok(this.shiftService.findByStartTimeBetween(start, end));
     }
 
