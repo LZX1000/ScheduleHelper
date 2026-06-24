@@ -41,7 +41,7 @@ class ShiftRoleRepositoryIT {
     @Autowired
     private ShiftRepository shiftRepository;
 
-    private final static Map<String, Shift> shifts = new HashMap<>();
+    private static final Map<String, Shift> shifts = new HashMap<>();
 
     private void setupShifts() {
         shifts.put("Sun", shiftRepository.save(new Shift(
@@ -79,7 +79,7 @@ class ShiftRoleRepositoryIT {
     @Autowired
     private EmployeeRepository employeeRepository;
 
-    private final static Map<String, Employee> employees = new HashMap<>();
+    private static final Map<String, Employee> employees = new HashMap<>();
 
     private void setupEmployees() {
         employees.put("John Smith", employeeRepository.save(new Employee("John", "Smith")));
@@ -93,7 +93,7 @@ class ShiftRoleRepositoryIT {
     @Autowired
     private RoleTypeRepository roleTypeRepository;
 
-    private final static Map<String, RoleType> roleTypes = new HashMap<>();
+    private static final Map<String, RoleType> roleTypes = new HashMap<>();
 
     private void setupRoleTypes() {
         roleTypes.put("PA", roleTypeRepository.save(new RoleType("PA")));
